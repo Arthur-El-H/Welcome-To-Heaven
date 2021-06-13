@@ -22,10 +22,12 @@ public class Player : AbstractWaiter
     }
     public void HitNext() 
     {
+        Debug.Log("Im Hitting");
         stairway.RegularGotHit();
     }
     public void ShakeNextsHand() 
     {
+        Debug.Log("Im Shaking the hand");
         stairway.RegularGotHandShaken();
     }
 }

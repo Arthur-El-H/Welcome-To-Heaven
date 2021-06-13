@@ -15,22 +15,30 @@ public class Stairway : MonoBehaviour
     {
         for (int i = index; i < waiters.Count; i++)
         {
-            ChangePos(waiters[i], i--);
+            ChangePos(waiters[i], i);
         }
     }
 
     public void RegularGotHit()
     {
+        Debug.Log("Test 0");
         int index = player.currentPositionIndex - 1;
         //Play Holy-Animation
         //Play Hit-Animation for player and Regular
         if (waiters[index].CheckHolyness()) { player.GoToHell(); gameManager.Loose(); return; }        //Check For Win
+        Debug.Log("Test 1");
 
-        waiters[index].GoToHell();
+        AbstractWaiter currentWaiter = waiters[index];
+        Debug.Log("Test 2");
         waiters.RemoveAt(index);
+        Debug.Log("Test 3");
+        currentWaiter.GoToHell();
+        Debug.Log("Test 4");
         MovePhysciallyUpTo(index);
+        Debug.Log("Test 5");
 
-        if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }   //Check for Win
+        //if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }   //Check for Win
+        //Debug.Log("Test 6");
     }
 
     public void RegularGotHandShaken()
@@ -51,10 +59,14 @@ public class Stairway : MonoBehaviour
 
     private void Swap(AbstractWaiter newFirst, AbstractWaiter newSecond)
     {
-        waiters.RemoveAt(newFirst.currentPositionIndex);
-        waiters.Insert(newSecond.currentPositionIndex, newFirst);
-        ChangePos(newFirst, newFirst.currentPositionIndex);
-        ChangePos(newSecond, newSecond.currentPositionIndex);
+        int newFirstIndex = newFirst.currentPositionIndex;
+        int newSecondIndex = newSecond.currentPositionIndex;
+
+        waiters.RemoveAt(newFirstIndex);
+        waiters.Insert(newSecondIndex, newFirst);
+
+        ChangePos(newFirst, newSecondIndex);
+        ChangePos(newSecond, newFirstIndex);
     }
 
     public void LetOneIn()
