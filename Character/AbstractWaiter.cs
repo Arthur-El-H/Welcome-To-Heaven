@@ -4,18 +4,29 @@ using UnityEngine;
 
 public abstract class AbstractWaiter : MonoBehaviour
 {
-    public void goToHell() 
+    public int currentPositionIndex;
+
+    public void GoToHell() 
     {
 
     }
 
-    public void goToHeaven()
+    public void GoToHeaven()
     {
 
     }
 
-    public void moveToPos(Vector2 Position)
+    public void MoveToPos(Vector2 Position)
     {
 
     }
+
+
+    //For regulars
+
+    bool IAmHoly;
+
+    public bool CheckHolyness() { return IAmHoly; }
+    public void ShakeHandsBackwards() { }
+    public void getHit() { }
 }

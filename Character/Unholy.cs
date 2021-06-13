@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Regular : AbstractWaiter
+public class Unholy : AbstractWaiter
 {
 
 }

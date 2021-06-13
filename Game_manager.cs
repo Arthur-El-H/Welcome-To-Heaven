@@ -1,17 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Game_manager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    //References
+    FreeSlotsManager freeSlotsManager;
+
+    public void Loose() { }
+
+    public void PlayerGotToGates()
     {
-        
+        if(freeSlotsManager.GetFreeSlots() > 0) { Win(); }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Win()
     {
         
     }
