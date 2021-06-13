@@ -8,7 +8,8 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     public void GoToHell() 
     {
-
+        Debug.Log("Going to hell");
+        Destroy(this);
     }
 
     public void GoToHeaven()
