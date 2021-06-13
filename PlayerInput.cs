@@ -6,15 +6,19 @@ public class PlayerInput : MonoBehaviour
 {
     Player player;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        player = this.GetComponent<Player>();
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown("RightArrow"))
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             player.ShakeNextsHand();
         }
 
-        else if (Input.GetKeyDown("LeftArrow"))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             player.HitNext();
         }

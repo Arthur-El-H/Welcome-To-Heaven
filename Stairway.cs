@@ -5,11 +5,11 @@ using UnityEngine;
 public class Stairway : MonoBehaviour
 {
     //References
-    Game_manager gameManager;
-    Player player;
+    public Game_manager gameManager;
+    public Player player;
 
-    List<AbstractWaiter> waiters = new List<AbstractWaiter>();
-    List<Vector2> positions = new List<Vector2>();
+    public List<AbstractWaiter> waiters;
+    public List<Vector2> positions;
 
     private void MovePhysciallyUpTo(int index) 
     {

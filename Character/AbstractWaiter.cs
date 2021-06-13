@@ -48,7 +48,7 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     //For regulars
 
-    bool IAmHoly;
+    bool IAmHoly; public void MakeHoly() { IAmHoly = true; }
 
     public bool CheckHolyness() { return IAmHoly; }
     public void ShakeHandsBackwards() 
