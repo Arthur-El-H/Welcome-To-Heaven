@@ -9,6 +9,6 @@ public class FreeSlotsManager : MonoBehaviour
 
     public int GetFreeSlots()
     {
-        return currentFreeSlotsInHeaven
+        return currentFreeSlotsInHeaven;
     }
 }

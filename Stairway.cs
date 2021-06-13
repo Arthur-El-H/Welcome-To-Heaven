@@ -23,11 +23,13 @@ public class Stairway : MonoBehaviour
     {
         int index = player.currentPositionIndex - 1;
         //Play Hit-Animation for player and Regular
-        if (waiters[index].CheckHolyness()) { gameManager.Loose(); return; }
+        if (waiters[index].CheckHolyness()) { gameManager.Loose(); return; }        //Check For Win
+
         waiters[index].GoToHell();
         waiters.RemoveAt(index);
         MovePhysciallyUpTo(index);
-        if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }
+
+        if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }   //Check for Win
     }
 
     public void RegularGotHandShaken()
