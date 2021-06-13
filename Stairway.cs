@@ -22,8 +22,9 @@ public class Stairway : MonoBehaviour
     public void RegularGotHit()
     {
         int index = player.currentPositionIndex - 1;
+        //Play Holy-Animation
         //Play Hit-Animation for player and Regular
-        if (waiters[index].CheckHolyness()) { gameManager.Loose(); return; }        //Check For Win
+        if (waiters[index].CheckHolyness()) { player.GoToHell(); gameManager.Loose(); return; }        //Check For Win
 
         waiters[index].GoToHell();
         waiters.RemoveAt(index);
@@ -54,5 +55,13 @@ public class Stairway : MonoBehaviour
         waiters.Insert(newSecond.currentPositionIndex, newFirst);
         ChangePos(newFirst, newFirst.currentPositionIndex);
         ChangePos(newSecond, newSecond.currentPositionIndex);
+    }
+
+    public void LetOneIn()
+    {
+        AbstractWaiter waiter = waiters[0];
+        waiters.RemoveAt(0);
+        MovePhysciallyUpTo(0);
+        waiter.GoToHeaven();
     }
 }

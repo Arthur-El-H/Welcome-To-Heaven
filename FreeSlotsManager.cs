@@ -11,4 +11,15 @@ public class FreeSlotsManager : MonoBehaviour
     {
         return currentFreeSlotsInHeaven;
     }
+
+    public void RemoveOneSlot()
+    {
+        currentFreeSlotsInHeaven--;
+        DisplayOnView(currentFreeSlotsInHeaven);
+    }
+
+    private void DisplayOnView(int slots)
+    {
+        Debug.Log(slots + " slots still available");
+    }
 }

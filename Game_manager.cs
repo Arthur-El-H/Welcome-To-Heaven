@@ -7,7 +7,11 @@ public class Game_manager : MonoBehaviour
 {
     //References
     FreeSlotsManager freeSlotsManager;
+    CurrentPositionManager currentPositionManager;
+    Stairway stairway;
+    Player player;
 
+    float entryTime; // Time before a new waiter gets in
     public void Loose() { }
 
     public void PlayerGotToGates()
@@ -18,5 +22,17 @@ public class Game_manager : MonoBehaviour
     private void Win()
     {
         
+    }
+
+    IEnumerator LettingPeopleIn()
+    {
+        while (freeSlotsManager.GetFreeSlots() > 0)
+        {
+            yield return new WaitForSeconds(entryTime);
+            stairway.LetOneIn();
+            freeSlotsManager.RemoveOneSlot();
+            currentPositionManager.Actualize(player.currentPositionIndex);
+        }
+        yield return null;
     }
 }
