@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     Player player;
+    bool isBlocked = false; public void block() { isBlocked = true; } public void unblock() { isBlocked = false; }
 
     private void Start()
     {
@@ -13,6 +14,7 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
+        if (isBlocked) { return; }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             player.ShakeNextsHand();

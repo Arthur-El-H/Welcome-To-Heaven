@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Stairway : MonoBehaviour
@@ -15,7 +16,7 @@ public class Stairway : MonoBehaviour
     {
         for (int i = index; i < waiters.Count; i++)
         {
-            ChangePos(waiters[i], i);
+            ChangePosAsync(waiters[i], i);
         }
     }
 
@@ -47,17 +48,18 @@ public class Stairway : MonoBehaviour
         //Play Handshake-Animation for player and Regular
         if (waiters[index].CheckHolyness())
         {
-            Swap(player, waiters[index]);
+            SwapAsync(player, waiters[index]);
         }
     }
 
-    private void ChangePos(AbstractWaiter waiter, int index)
+    private async Task ChangePosAsync(AbstractWaiter waiter, int index)
     {
-        waiter.MoveToPos(positions[index]);  //physical Movement
+        Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
         waiter.currentPositionIndex = index; //change index-reference
+        await (moving);
     }
-
-    private void Swap(AbstractWaiter newFirst, AbstractWaiter newSecond)
+     
+    private async void SwapAsync(AbstractWaiter newFirst, AbstractWaiter newSecond)
     {
         int newFirstIndex = newFirst.currentPositionIndex;
         int newSecondIndex = newSecond.currentPositionIndex;
@@ -65,8 +67,15 @@ public class Stairway : MonoBehaviour
         waiters.RemoveAt(newFirstIndex);
         waiters.Insert(newSecondIndex, newFirst);
 
-        ChangePos(newFirst, newSecondIndex);
-        ChangePos(newSecond, newFirstIndex);
+        Task taskOne = ChangePosAsync (newFirst, newSecondIndex);
+        Task taskTwo = ChangePosAsync (newSecond, newFirstIndex);
+
+        //Task taskNewFirst = newFirst.MoveToAsync(positions[newSecondIndex]);
+        //Task taskNewSecond = newSecond.MoveToAsync(positions[newSecondIndex]);
+
+        await (taskOne);
+        await (taskTwo);
+        Debug.Log("Now I arrived");
     }
 
     public void LetOneIn()
