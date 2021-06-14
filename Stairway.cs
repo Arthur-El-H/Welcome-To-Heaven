@@ -8,58 +8,54 @@ public class Stairway : MonoBehaviour
     //References
     public Game_manager gameManager;
     public Player player;
+    public PlayerInput playerInput;
 
     public List<AbstractWaiter> waiters;
     public List<Vector2> positions;
 
-    private void MovePhysciallyUpTo(int index) 
+    private async Task AllWaitersMovePhysciallyUpTo(int index) 
     {
         for (int i = index; i < waiters.Count; i++)
         {
-            ChangePosAsync(waiters[i], i);
+            Task t = ChangePosAsync(waiters[i], i);
+            await(t);
         }
     }
 
-    public void RegularGotHit()
+    public async void RegularGotHit()
     {
-        Debug.Log("Test 0");
         int index = player.currentPositionIndex - 1;
         //Play Holy-Animation
         //Play Hit-Animation for player and Regular
         if (waiters[index].CheckHolyness()) { player.GoToHell(); gameManager.Loose(); return; }        //Check For Win
-        Debug.Log("Test 1");
 
         AbstractWaiter currentWaiter = waiters[index];
-        Debug.Log("Test 2");
         waiters.RemoveAt(index);
-        Debug.Log("Test 3");
         currentWaiter.GoToHell();
-        Debug.Log("Test 4");
-        MovePhysciallyUpTo(index);
-        Debug.Log("Test 5");
+
+        playerInput.block();
+        Task t = AllWaitersMovePhysciallyUpTo(index);
+        await (t);
+        playerInput.unblock();
 
         //if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }   //Check for Win
-        //Debug.Log("Test 6");
     }
 
-    public void RegularGotHandShaken()
+    public async void RegularGotHandShaken()
     {
         int index = player.currentPositionIndex - 1;
+        playerInput.block();
         //Play Handshake-Animation for player and Regular
         if (waiters[index].CheckHolyness())
         {
-            SwapAsync(player, waiters[index]);
+            Task t = SwapAsync(player, waiters[index]);
+            await (t);
         }
+        // await (anim);
+        playerInput.unblock();
     }
 
-    private async Task ChangePosAsync(AbstractWaiter waiter, int index)
-    {
-        Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
-        waiter.currentPositionIndex = index; //change index-reference
-        await (moving);
-    }
-     
-    private async void SwapAsync(AbstractWaiter newFirst, AbstractWaiter newSecond)
+    private async Task SwapAsync(AbstractWaiter newFirst, AbstractWaiter newSecond)
     {
         int newFirstIndex = newFirst.currentPositionIndex;
         int newSecondIndex = newSecond.currentPositionIndex;
@@ -70,11 +66,15 @@ public class Stairway : MonoBehaviour
         Task taskOne = ChangePosAsync (newFirst, newSecondIndex);
         Task taskTwo = ChangePosAsync (newSecond, newFirstIndex);
 
-        //Task taskNewFirst = newFirst.MoveToAsync(positions[newSecondIndex]);
-        //Task taskNewSecond = newSecond.MoveToAsync(positions[newSecondIndex]);
-
         await (taskOne);
         await (taskTwo);
+    }
+
+    private async Task ChangePosAsync(AbstractWaiter waiter, int index)
+    {
+        Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
+        waiter.currentPositionIndex = index; //change index-reference
+        await (moving);
         Debug.Log("Now I arrived");
     }
 
@@ -82,7 +82,7 @@ public class Stairway : MonoBehaviour
     {
         AbstractWaiter waiter = waiters[0];
         waiters.RemoveAt(0);
-        MovePhysciallyUpTo(0);
+        AllWaitersMovePhysciallyUpTo(0);
         waiter.GoToHeaven();
     }
 }

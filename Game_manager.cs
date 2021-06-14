@@ -116,6 +116,7 @@ public class Game_manager : MonoBehaviour
         
         player.stairway = stairway;
         stairway.player = player;
+        stairway.playerInput = player.GetComponent<PlayerInput>();
     }
 
     private AbstractWaiter CreateWaiter(Vector3 newPos)
