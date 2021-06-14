@@ -22,11 +22,11 @@ public class Game_manager : MonoBehaviour
     float entryTime; // Time before a new waiter gets in
 
     int positionCounter;
-    int amountOfPositions = 32;
+    int amountOfPositions = 26;
     int PosisitionsPerWay = 10;
-    float xStep = 1.8f;
-    float yStep = .25f;
-    Vector2 firstPos = new Vector2(-8f, -4f);
+    float xStep = 1.6f;
+    float yStep = .38f;
+    Vector2 firstPos = new Vector2(-7.3f, -4.25f);
 
     private void Start()
     {
@@ -67,6 +67,7 @@ public class Game_manager : MonoBehaviour
         positionCounter = amountOfPositions;
         positionCounter--;                
         CreatePlayer();
+        //player.turnRight();
 
         for (int i = 1; i < PosisitionsPerWay; i++)     //First Way
         {
@@ -74,34 +75,43 @@ public class Game_manager : MonoBehaviour
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
             stairway.positions[positionCounter] = newPos;
             stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+            //stairway.waiters[positionCounter].turnRight();
+            positionCounter--;
         }
 
-        for(int i = 1; i < PosisitionsPerWay; i++)      //Second Way
+        xStep = 1.422222f;
+        yStep = .2044444f;
+
+        for(int i = 0; i <(PosisitionsPerWay-1); i++)      //Second Way To (-6/2) and from (6.8/.16)
         {
             currentHeight += yStep;
-            newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight);
-            int actualIndex = amountOfPositions - (i + PosisitionsPerWay);
+            newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight + .2f);
             stairway.positions[positionCounter] = newPos;
             stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+            positionCounter--;
         }
 
-        for (int i = 1; i < PosisitionsPerWay; i++)     //Third Way
+        xStep = 1.35f;
+        yStep = .23f;
+
+        for (int i = 2; i < (PosisitionsPerWay-1); i++)     //Third Way
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-            int actualIndex = amountOfPositions - (i + 2*PosisitionsPerWay);
-            stairway.positions[positionCounter] = newPos;
-            stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos); 
-        }
-
-        for (int i = 1; i < (PosisitionsPerWay/2); i++)      //Fourth and last (half) Way
-        {
-            currentHeight += yStep;
-            newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight);
-            int actualIndex = amountOfPositions - (i + 3 * PosisitionsPerWay);
             stairway.positions[positionCounter] = newPos;
             stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+            //stairway.waiters[positionCounter].turnRight();
+            positionCounter--;
         }
+
+        //for (int i = 1; i < (PosisitionsPerWay/2); i++)      //Fourth and last (half) Way
+        //{
+        //    currentHeight += yStep;
+        //    newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight);
+        //    int actualIndex = amountOfPositions - (i + 3 * PosisitionsPerWay);
+        //    stairway.positions[positionCounter] = newPos;
+        //    stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+        //}
     }
 
     private void CreatePlayer()
@@ -132,7 +142,6 @@ public class Game_manager : MonoBehaviour
             waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
         }
         waiter.currentPositionIndex = positionCounter;
-        positionCounter--;
         return waiter;
     }
 }

@@ -13,13 +13,20 @@ public class Stairway : MonoBehaviour
     public List<AbstractWaiter> waiters;
     public List<Vector2> positions;
 
+    int indexToTurnLeft = 10;
+    int indexToTurnRight = 18;
+
     private async Task AllWaitersMovePhysciallyUpTo(int index) 
     {
         for (int i = index; i < waiters.Count; i++)
         {
-            Task t = ChangePosAsync(waiters[i], i);
-            await(t);
-        }
+            if (i == index)
+            {
+                Task t = ChangePosAsync(waiters[i], i);
+                await (t);
+            }
+            ChangePosAsync(waiters[i], i);
+        } 
     }
 
     public async void RegularGotHit()

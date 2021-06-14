@@ -45,6 +45,16 @@ public abstract class AbstractWaiter : MonoBehaviour
         }
     }
 
+    public void turnLeft()
+    {
+        transform.eulerAngles = new Vector3(0f, 0f, 0f);
+    }
+
+    public void turnRight()
+    {
+        transform.eulerAngles = new Vector3(0f, 180f, 0f);
+    }
+
     //For regulars
 
     bool IAmHoly; public void MakeHoly() { IAmHoly = true; }
