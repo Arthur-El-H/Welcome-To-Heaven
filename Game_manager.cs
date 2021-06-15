@@ -33,6 +33,7 @@ public class Game_manager : MonoBehaviour
     {
         initStairway();
         StartCoroutine(lettingPeopleIn());
+        currentPositionManager.Initialize(player);
     }
 
     IEnumerator lettingPeopleIn()
@@ -71,7 +72,8 @@ public class Game_manager : MonoBehaviour
             yield return new WaitForSeconds(entryTime);
             stairway.LetOneIn();
             freeSlotsManager.RemoveOneSlot();
-            currentPositionManager.Actualize(player.currentPositionIndex);
+            currentPositionManager.Actualize();
+            if (freeSlotsManager.CheckLoss()) { Loose(); }
         }
         yield return null;
     }

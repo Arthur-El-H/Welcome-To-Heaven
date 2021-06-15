@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class CurrentPositionManager : MonoBehaviour
 {
+    Player player;
     int currentPosOfPlayer;
 
-    public void Actualize(int Pos)
+    public void Initialize(Player p)
     {
-        currentPosOfPlayer = Pos;
-        DisplayOnView(Pos);
+        currentPosOfPlayer = p.currentPositionIndex;
+        DisplayOnView(currentPosOfPlayer);
+        player = p;
+    }
+
+    public void Actualize()
+    {
+        currentPosOfPlayer = player.currentPositionIndex;
+        DisplayOnView(currentPosOfPlayer);
     }
 
     private void DisplayOnView(int Pos)

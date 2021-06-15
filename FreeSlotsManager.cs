@@ -5,7 +5,13 @@ using UnityEngine;
 
 public class FreeSlotsManager : MonoBehaviour
 {
-    int currentFreeSlotsInHeaven;
+    int currentFreeSlotsInHeaven = 15;
+
+    public bool CheckLoss()
+    {
+        if(currentFreeSlotsInHeaven == 0) { return true; }
+        else { return false; }
+    }
 
     public int GetFreeSlots()
     {

@@ -13,6 +13,9 @@ public class Stairway : MonoBehaviour
     public List<AbstractWaiter> waiters;
     public List<Vector2> positions;
 
+    public CurrentPositionManager currentPositionManager;
+    public FreeSlotsManager freeSlotsManager;
+
     int indexToTurnLeft = 10;
     int indexToTurnRight = 18;
 
@@ -42,6 +45,10 @@ public class Stairway : MonoBehaviour
         Task t = AllWaitersMovePhysciallyUpTo(index);
         await (t);
         Debug.Log("unblock");
+
+        currentPositionManager.Actualize();
+        freeSlotsManager.RemoveOneSlot();
+
         playerInput.unblock();
 
         //if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }   //Check for Win
@@ -56,6 +63,7 @@ public class Stairway : MonoBehaviour
         {
             Task t = SwapAsync(player, waiters[index]);
             await (t);
+            currentPositionManager.Actualize();
         }
         // await (anim);
         playerInput.unblock();
@@ -81,7 +89,6 @@ public class Stairway : MonoBehaviour
         Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
         waiter.currentPositionIndex = index; //change index-reference
         await (moving);
-        Debug.Log("Now I arrived");
     }
 
     public async void LetOneIn()
@@ -91,6 +98,10 @@ public class Stairway : MonoBehaviour
         waiters.RemoveAt(0);
         Task t = AllWaitersMovePhysciallyUpTo(0);
         await(t);
+
+        currentPositionManager.Actualize();
+        freeSlotsManager.RemoveOneSlot();
+
         playerInput.unblock();
         waiter.GoToHeaven();
     }
