@@ -21,13 +21,19 @@ public class Stairway : MonoBehaviour
 
     private async Task AllWaitersMovePhysciallyUpTo(int index) 
     {
+        List<Task> tasks = new List<Task>();
         int posOfLast = waiters.Count - 1;
+
         for (int i = index; i < posOfLast; i++)
-        {
-            ChangePosAsync(waiters[i], i);
+        {    
+            Task t = ChangePosAsync(waiters[i], i);
+            tasks.Add(t);
+            if (i == 15) { waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 9; }
+            if (i == 6)  { waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 8; }
         }
-        Task t = ChangePosAsync(waiters[posOfLast], posOfLast);
-        await (t);
+        Task t0 = ChangePosAsync(waiters[posOfLast], posOfLast);
+        await Task.WhenAll(tasks.ToArray());
+        //await (t0);
     }
 
     public async void RegularGotHit()
@@ -47,7 +53,6 @@ public class Stairway : MonoBehaviour
         Debug.Log("unblock");
 
         currentPositionManager.Actualize();
-        freeSlotsManager.RemoveOneSlot();
 
         playerInput.unblock();
 
@@ -95,14 +100,17 @@ public class Stairway : MonoBehaviour
     {
         playerInput.block();
         AbstractWaiter waiter = waiters[0];
+
+        if (waiter == player) { gameManager.Win(); }
+
         waiters.RemoveAt(0);
         Task t = AllWaitersMovePhysciallyUpTo(0);
-        await(t);
+        waiter.GoToHeaven();
+        await (t);
 
         currentPositionManager.Actualize();
         freeSlotsManager.RemoveOneSlot();
 
         playerInput.unblock();
-        waiter.GoToHeaven();
     }
 }

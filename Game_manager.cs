@@ -20,7 +20,7 @@ public class Game_manager : MonoBehaviour
     Player player;
     PlayerInput playerInput;
 
-    float entryTime = 5; // Time before a new waiter gets in
+    float entryTime = 1f; // Time before a new waiter gets in
 
     int positionCounter;
     int amountOfPositions = 26;
@@ -31,13 +31,16 @@ public class Game_manager : MonoBehaviour
 
     private void Start()
     {
-        initStairway();
+        InitStairway();
+        SetWaitersLayers();
         StartCoroutine(lettingPeopleIn());
         currentPositionManager.Initialize(player);
     }
 
     IEnumerator lettingPeopleIn()
     {
+        yield return new WaitForSeconds(3f);
+
         while (true)
         {
             while (true) 
@@ -49,20 +52,24 @@ public class Game_manager : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
             stairway.LetOneIn();
+            if (freeSlotsManager.CheckLoss()) { Loose(); break; }
             yield return new WaitForSeconds(entryTime);
         }
     }
 
-    public void Loose() { }
+    public void Loose() 
+    {
+        Debug.Log("You Loose");
+    }
 
     public void PlayerGotToGates()
     {
         if(freeSlotsManager.GetFreeSlots() > 0) { Win(); }
     }
 
-    private void Win()
+    public void Win()
     {
-        
+        Debug.Log("You Win");
     }
 
     IEnumerator LettingPeopleIn()
@@ -73,12 +80,35 @@ public class Game_manager : MonoBehaviour
             stairway.LetOneIn();
             freeSlotsManager.RemoveOneSlot();
             currentPositionManager.Actualize();
-            if (freeSlotsManager.CheckLoss()) { Loose(); }
+            Debug.Log("WTF");
+            Debug.Log(freeSlotsManager.GetFreeSlots());
+            if (freeSlotsManager.CheckLoss()) { Loose(); break; }
         }
         yield return null;
     }
 
-    private void initStairway()             
+    private void SetWaitersLayers()
+    {
+        for (int i = 24; i > 0; i--)           
+        {
+            if(i > 16)
+            {
+                stairway.waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 10;
+            }
+
+            else if( i > 7)
+            {
+                stairway.waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 9;
+            }
+
+            else
+            {
+                stairway.waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 8;
+            }
+        }
+    }
+
+    private void InitStairway()             
     {
         Vector2 newPos;
         float currentHeight = firstPos.y;
