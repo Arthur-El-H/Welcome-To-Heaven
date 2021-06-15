@@ -18,8 +18,9 @@ public class Game_manager : MonoBehaviour
     public AbstractWaiter Holy;
 
     Player player;
+    PlayerInput playerInput;
 
-    float entryTime; // Time before a new waiter gets in
+    float entryTime = 5; // Time before a new waiter gets in
 
     int positionCounter;
     int amountOfPositions = 26;
@@ -31,6 +32,24 @@ public class Game_manager : MonoBehaviour
     private void Start()
     {
         initStairway();
+        StartCoroutine(lettingPeopleIn());
+    }
+
+    IEnumerator lettingPeopleIn()
+    {
+        while (true)
+        {
+            while (true) 
+            {
+                if (!playerInput.getBlockStatus())
+                {
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            stairway.LetOneIn();
+            yield return new WaitForSeconds(entryTime);
+        }
     }
 
     public void Loose() { }
@@ -57,7 +76,7 @@ public class Game_manager : MonoBehaviour
         yield return null;
     }
 
-    private void initStairway()             //Stairway positions must be of (3*x + .5x)
+    private void initStairway()             
     {
         Vector2 newPos;
         float currentHeight = firstPos.y;
@@ -67,7 +86,6 @@ public class Game_manager : MonoBehaviour
         positionCounter = amountOfPositions;
         positionCounter--;                
         CreatePlayer();
-        //player.turnRight();
 
         for (int i = 1; i < PosisitionsPerWay; i++)     //First Way
         {
@@ -75,7 +93,6 @@ public class Game_manager : MonoBehaviour
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
             stairway.positions[positionCounter] = newPos;
             stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
-            //stairway.waiters[positionCounter].turnRight();
             positionCounter--;
         }
 
@@ -100,18 +117,8 @@ public class Game_manager : MonoBehaviour
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
             stairway.positions[positionCounter] = newPos;
             stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
-            //stairway.waiters[positionCounter].turnRight();
             positionCounter--;
         }
-
-        //for (int i = 1; i < (PosisitionsPerWay/2); i++)      //Fourth and last (half) Way
-        //{
-        //    currentHeight += yStep;
-        //    newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight);
-        //    int actualIndex = amountOfPositions - (i + 3 * PosisitionsPerWay);
-        //    stairway.positions[positionCounter] = newPos;
-        //    stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
-        //}
     }
 
     private void CreatePlayer()
@@ -126,7 +133,8 @@ public class Game_manager : MonoBehaviour
         
         player.stairway = stairway;
         stairway.player = player;
-        stairway.playerInput = player.GetComponent<PlayerInput>();
+        playerInput = player.GetComponent<PlayerInput>();
+        stairway.playerInput = playerInput;
     }
 
     private AbstractWaiter CreateWaiter(Vector3 newPos)

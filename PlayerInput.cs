@@ -5,7 +5,10 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     Player player;
-    bool isBlocked = false; public void block() { isBlocked = true; } public void unblock() { isBlocked = false; }
+    bool isBlocked = false; 
+    public void block() { isBlocked = true; } 
+    public void unblock() { isBlocked = false; }
+    public bool getBlockStatus() { return isBlocked; }
 
     private void Start()
     {

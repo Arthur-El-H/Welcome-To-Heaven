@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class AbstractWaiter : MonoBehaviour
 {
     public int currentPositionIndex;
-    private float speed = .5f;   public float getSpeed() { return speed; }
+    private float speed = 1.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
     public void GoToHell() 

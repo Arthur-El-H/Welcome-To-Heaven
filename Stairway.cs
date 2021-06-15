@@ -18,15 +18,13 @@ public class Stairway : MonoBehaviour
 
     private async Task AllWaitersMovePhysciallyUpTo(int index) 
     {
-        for (int i = index; i < waiters.Count; i++)
+        int posOfLast = waiters.Count - 1;
+        for (int i = index; i < posOfLast; i++)
         {
-            if (i == index)
-            {
-                Task t = ChangePosAsync(waiters[i], i);
-                await (t);
-            }
             ChangePosAsync(waiters[i], i);
-        } 
+        }
+        Task t = ChangePosAsync(waiters[posOfLast], posOfLast);
+        await (t);
     }
 
     public async void RegularGotHit()
@@ -43,6 +41,7 @@ public class Stairway : MonoBehaviour
         playerInput.block();
         Task t = AllWaitersMovePhysciallyUpTo(index);
         await (t);
+        Debug.Log("unblock");
         playerInput.unblock();
 
         //if (player.currentPositionIndex == 0) { gameManager.PlayerGotToGates(); }   //Check for Win
@@ -85,11 +84,14 @@ public class Stairway : MonoBehaviour
         Debug.Log("Now I arrived");
     }
 
-    public void LetOneIn()
+    public async void LetOneIn()
     {
+        playerInput.block();
         AbstractWaiter waiter = waiters[0];
         waiters.RemoveAt(0);
-        AllWaitersMovePhysciallyUpTo(0);
+        Task t = AllWaitersMovePhysciallyUpTo(0);
+        await(t);
+        playerInput.unblock();
         waiter.GoToHeaven();
     }
 }
