@@ -20,7 +20,9 @@ public class Game_manager : MonoBehaviour
     Player player;
     PlayerInput playerInput;
 
-    float entryTime = 1f; // Time before a new waiter gets in
+    float timeBetweenEntries = 8f; // Time before a new waiter gets in
+    float timeToWaitBeforeFirstEntry = 3f;
+    float maxTimeOfInputBlock = 2f;
 
     int positionCounter;
     int amountOfPositions = 26;
@@ -39,21 +41,28 @@ public class Game_manager : MonoBehaviour
 
     IEnumerator lettingPeopleIn()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(timeToWaitBeforeFirstEntry); 
 
         while (true)
         {
-            while (true) 
+            if (playerInput.isInputBlocked())
             {
-                if (!playerInput.getBlockStatus())
-                {
-                    break;
-                }
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForSeconds(maxTimeOfInputBlock);
             }
+
+            //while (true) 
+            //{
+            //    if (!playerInput.isInputBlocked()) //Eigentlich sollte ich hier gucken, ob alle angekommen sind.
+            //    {
+            //        yield return new WaitForSeconds(maxTimeOfInputBlock);
+            //        break;
+            //    }
+            //    yield return new WaitForEndOfFrame();
+            //}
+
             stairway.LetOneIn();
             if (freeSlotsManager.CheckLoss()) { Loose(); break; }
-            yield return new WaitForSeconds(entryTime);
+            yield return new WaitForSeconds(timeBetweenEntries);
         }
     }
 
@@ -72,20 +81,20 @@ public class Game_manager : MonoBehaviour
         Debug.Log("You Win");
     }
 
-    IEnumerator LettingPeopleIn()
-    {
-        while (freeSlotsManager.GetFreeSlots() > 0)
-        {
-            yield return new WaitForSeconds(entryTime);
-            stairway.LetOneIn();
-            freeSlotsManager.RemoveOneSlot();
-            currentPositionManager.Actualize();
-            Debug.Log("WTF");
-            Debug.Log(freeSlotsManager.GetFreeSlots());
-            if (freeSlotsManager.CheckLoss()) { Loose(); break; }
-        }
-        yield return null;
-    }
+    //IEnumerator LettingPeopleIn()
+    //{
+    //    while (freeSlotsManager.GetFreeSlots() > 0)
+    //    {
+    //        yield return new WaitForSeconds(entryTime);
+    //        stairway.LetOneIn();
+    //        freeSlotsManager.RemoveOneSlot();
+    //        currentPositionManager.Actualize();
+    //        Debug.Log("WTF");
+    //        Debug.Log(freeSlotsManager.GetFreeSlots());
+    //        if (freeSlotsManager.CheckLoss()) { Loose(); break; }
+    //    }
+    //    yield return null;
+    //}
 
     private void SetWaitersLayers()
     {

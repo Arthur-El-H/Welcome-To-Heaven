@@ -21,18 +21,22 @@ public class Stairway : MonoBehaviour
 
     private async Task AllWaitersMovePhysciallyUpTo(int index) 
     {
-        List<Task> tasks = new List<Task>();
+        List<Task> allTasksOfMocingWaiters = new List<Task>();
         int posOfLast = waiters.Count - 1;
 
         for (int i = index; i < posOfLast; i++)
         {    
-            Task t = ChangePosAsync(waiters[i], i);
-            tasks.Add(t);
+            Task playerMovingToNextPos = createMoveTask(waiters[i], i);
+            allTasksOfMocingWaiters.Add(playerMovingToNextPos);
+
+            // waiter which is nearer to camera must be in according layer
             if (i == 15) { waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 9; }
             if (i == 6)  { waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 8; }
+
+            await (playerMovingToNextPos);
         }
-        Task t0 = ChangePosAsync(waiters[posOfLast], posOfLast);
-        await Task.WhenAll(tasks.ToArray());
+        Task t0 = createMoveTask(waiters[posOfLast], posOfLast);
+        await Task.WhenAll(allTasksOfMocingWaiters.ToArray());
         //await (t0);
     }
 
@@ -82,14 +86,14 @@ public class Stairway : MonoBehaviour
         waiters.RemoveAt(newFirstIndex);
         waiters.Insert(newSecondIndex, newFirst);
 
-        Task taskOne = ChangePosAsync (newFirst, newSecondIndex);
-        Task taskTwo = ChangePosAsync (newSecond, newFirstIndex);
+        Task taskOne = createMoveTask (newFirst, newSecondIndex);
+        Task taskTwo = createMoveTask (newSecond, newFirstIndex);
 
         await (taskOne);
         await (taskTwo);
     }
 
-    private async Task ChangePosAsync(AbstractWaiter waiter, int index)
+    private async Task createMoveTask (AbstractWaiter waiter, int index)
     {
         Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
         waiter.currentPositionIndex = index; //change index-reference
@@ -99,13 +103,13 @@ public class Stairway : MonoBehaviour
     public async void LetOneIn()
     {
         playerInput.block();
-        AbstractWaiter waiter = waiters[0];
+        AbstractWaiter waiterEnteringHeaven = waiters[0];
 
-        if (waiter == player) { gameManager.Win(); }
+        if (waiterEnteringHeaven == player) { gameManager.Win(); }
 
-        waiters.RemoveAt(0);
+        waiters.RemoveAt(0);  
         Task t = AllWaitersMovePhysciallyUpTo(0);
-        waiter.GoToHeaven();
+        waiterEnteringHeaven.GoToHeaven();
         await (t);
 
         currentPositionManager.Actualize();

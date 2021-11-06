@@ -7,8 +7,8 @@ public class PlayerInput : MonoBehaviour
     Player player;
     bool isBlocked = false; 
     public void block() { isBlocked = true; } 
-    public void unblock() { isBlocked = false; }
-    public bool getBlockStatus() { return isBlocked; }
+    public void unblock() { isBlocked = false; Debug.Log("unblocked"); }
+    public bool isInputBlocked() { return isBlocked; }
 
     private void Start()
     {
@@ -18,6 +18,7 @@ public class PlayerInput : MonoBehaviour
     void Update()
     {
         if (isBlocked) { return; }
+
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             player.ShakeNextsHand();
