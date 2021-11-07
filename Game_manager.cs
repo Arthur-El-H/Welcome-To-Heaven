@@ -81,38 +81,23 @@ public class Game_manager : MonoBehaviour
         Debug.Log("You Win");
     }
 
-    //IEnumerator LettingPeopleIn()
-    //{
-    //    while (freeSlotsManager.GetFreeSlots() > 0)
-    //    {
-    //        yield return new WaitForSeconds(entryTime);
-    //        stairway.LetOneIn();
-    //        freeSlotsManager.RemoveOneSlot();
-    //        currentPositionManager.Actualize();
-    //        Debug.Log("WTF");
-    //        Debug.Log(freeSlotsManager.GetFreeSlots());
-    //        if (freeSlotsManager.CheckLoss()) { Loose(); break; }
-    //    }
-    //    yield return null;
-    //}
-
     private void SetWaitersLayers()
     {
         for (int i = 24; i > 0; i--)           
         {
             if(i > 16)
             {
-                stairway.waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 10;
+                stairway.positionsOnStairway[i].waiterOnPosition.GetComponent<SpriteRenderer>().sortingOrder = 10;
             }
 
             else if( i > 7)
             {
-                stairway.waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 9;
+                stairway.positionsOnStairway[i].waiterOnPosition.GetComponent<SpriteRenderer>().sortingOrder = 9;
             }
 
             else
             {
-                stairway.waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 8;
+                stairway.positionsOnStairway[i].waiterOnPosition.GetComponent<SpriteRenderer>().sortingOrder = 8;
             }
         }
     }
@@ -122,18 +107,22 @@ public class Game_manager : MonoBehaviour
         Vector2 newPos;
         float currentHeight = firstPos.y;
 
-        stairway.positions = new List<Vector2>(new Vector2[amountOfPositions]);
-        stairway.waiters = new List<AbstractWaiter>(new AbstractWaiter[amountOfPositions]);
+        stairway.positionsOnStairway = new List<PositionOnStairway>(new PositionOnStairway[amountOfPositions]);
         positionCounter = amountOfPositions;
-        positionCounter--;                
+        positionCounter--;
         CreatePlayer();
 
         for (int i = 1; i < PosisitionsPerWay; i++)     //First Way
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-            stairway.positions[positionCounter] = newPos;
-            stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+
+            PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
+            nextPositionOnStairway.coordinates = newPos;
+            nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
+            nextPositionOnStairway.waiterOnPosition = CreateWaiter((Vector3)newPos, nextPositionOnStairway);
+            stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
+
             positionCounter--;
         }
 
@@ -144,8 +133,13 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight + .2f);
-            stairway.positions[positionCounter] = newPos;
-            stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+
+            PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
+            nextPositionOnStairway.coordinates = newPos;
+            nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
+            nextPositionOnStairway.waiterOnPosition = CreateWaiter((Vector3)newPos, nextPositionOnStairway);
+            stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
+
             positionCounter--;
         }
 
@@ -156,8 +150,13 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-            stairway.positions[positionCounter] = newPos;
-            stairway.waiters[positionCounter] = CreateWaiter((Vector3)newPos);
+
+            PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
+            nextPositionOnStairway.coordinates = newPos;
+            nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
+            nextPositionOnStairway.waiterOnPosition = CreateWaiter((Vector3)newPos, nextPositionOnStairway);
+            stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
+
             positionCounter--;
         }
     }
@@ -165,20 +164,23 @@ public class Game_manager : MonoBehaviour
     private void CreatePlayer()
     {
         Debug.Log("amount of Positions = " + amountOfPositions + " and Lists are so big: " + stairway.positions.Count);
-
-        stairway.positions[positionCounter] = firstPos;
         player = Instantiate(playerPre, (Vector3)firstPos, Quaternion.identity);
-        stairway.waiters[positionCounter] = player;
-        player.currentPositionIndex = positionCounter;
+
+        PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
+        nextPositionOnStairway.coordinates = firstPos;
+        nextPositionOnStairway.index = positionCounter; 
+        nextPositionOnStairway.waiterOnPosition = player;
+
         positionCounter--;
-        
+
+        player.currentPosition = nextPositionOnStairway;
         player.stairway = stairway;
         stairway.player = player;
         playerInput = player.GetComponent<PlayerInput>();
         stairway.playerInput = playerInput;
     }
 
-    private AbstractWaiter CreateWaiter(Vector3 newPos)
+    private AbstractWaiter CreateWaiter(Vector3 newPos, PositionOnStairway positionOnStairway)
     {
         AbstractWaiter waiter;
         int RandomInt = Random.Range(1, 3);
@@ -190,7 +192,21 @@ public class Game_manager : MonoBehaviour
         {            
             waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
         }
-        waiter.currentPositionIndex = positionCounter;
+        waiter.currentPosition = positionOnStairway;
         return waiter;
+    }
+
+    public void Update()
+    {
+        for (int i = 1; i < amountOfPositions-1; i++)
+        {
+            PositionOnStairway positionToCheck = stairway.positionsOnStairway[i];
+            PositionOnStairway prePosition = stairway.positionsOnStairway[i-1];
+
+            if (!positionToCheck.isEmpty) return;
+            if (prePosition.isEmpty) return;
+            prePosition.waiterOnPosition.catchUp();
+
+        }
     }
 }

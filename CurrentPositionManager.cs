@@ -9,14 +9,14 @@ public class CurrentPositionManager : MonoBehaviour
 
     public void Initialize(Player p)
     {
-        currentPosOfPlayer = p.currentPositionIndex;
+        currentPosOfPlayer = p.currentPosition.index;
         DisplayOnView(currentPosOfPlayer);
         player = p;
     }
 
     public void Actualize()
     {
-        currentPosOfPlayer = player.currentPositionIndex;
+        currentPosOfPlayer = player.currentPosition.index;
         DisplayOnView(currentPosOfPlayer);
     }
 

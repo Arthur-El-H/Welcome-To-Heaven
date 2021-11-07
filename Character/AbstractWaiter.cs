@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class AbstractWaiter : MonoBehaviour
 {
-    public int currentPositionIndex;
+    public PositionOnStairway currentPosition;
     private float speed = 0.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
@@ -19,6 +19,12 @@ public abstract class AbstractWaiter : MonoBehaviour
     {
         Debug.Log("Going to Heaven");
         Destroy(this.gameObject);
+    }
+
+    public void catchUp()
+    {
+        nextPosition = 
+        MoveToAsync()
     }
 
     public async Task MoveToAsync(Vector2 Pos)

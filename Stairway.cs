@@ -12,12 +12,10 @@ public class Stairway : MonoBehaviour
 
     public List<AbstractWaiter> waiters;
     public List<Vector2> positions;
+    public List<PositionOnStairway> positionsOnStairway;
 
     public CurrentPositionManager currentPositionManager;
     public FreeSlotsManager freeSlotsManager;
-
-    int indexToTurnLeft = 10;
-    int indexToTurnRight = 18;
 
     private async Task AllWaitersMovePhysciallyUpTo(int index) 
     {
@@ -42,14 +40,16 @@ public class Stairway : MonoBehaviour
 
     public async void RegularGotHit()
     {
-        int index = player.currentPositionIndex - 1;
+        int index = player.currentPosition.index - 1;
+
         //Play Holy-Animation
         //Play Hit-Animation for player and Regular
+
         if (waiters[index].CheckHolyness()) { player.GoToHell(); gameManager.Loose(); return; }        //Check For Win
 
-        AbstractWaiter currentWaiter = waiters[index];
+        AbstractWaiter hitWaiter = waiters[index];
         waiters.RemoveAt(index);
-        currentWaiter.GoToHell();
+        hitWaiter.GoToHell();
 
         playerInput.block();
         Task t = AllWaitersMovePhysciallyUpTo(index);
@@ -65,7 +65,7 @@ public class Stairway : MonoBehaviour
 
     public async void RegularGotHandShaken()
     {
-        int index = player.currentPositionIndex - 1;
+        int index = player.currentPosition.index - 1;
         playerInput.block();
         //Play Handshake-Animation for player and Regular
         if (waiters[index].CheckHolyness())
@@ -80,8 +80,8 @@ public class Stairway : MonoBehaviour
 
     private async Task SwapAsync(AbstractWaiter newFirst, AbstractWaiter newSecond)
     {
-        int newFirstIndex = newFirst.currentPositionIndex;
-        int newSecondIndex = newSecond.currentPositionIndex;
+        int newFirstIndex = newFirst.currentPosition.index;
+        int newSecondIndex = newSecond.currentPosition.index;
 
         waiters.RemoveAt(newFirstIndex);
         waiters.Insert(newSecondIndex, newFirst);
@@ -96,25 +96,20 @@ public class Stairway : MonoBehaviour
     private async Task createMoveTask (AbstractWaiter waiter, int index)
     {
         Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
-        waiter.currentPositionIndex = index; //change index-reference
+        waiter.currentPosition.index = index; //change index-reference
         await (moving);
     }
 
-    public async void LetOneIn()
+    public void LetOneIn()
     {
-        playerInput.block();
-        AbstractWaiter waiterEnteringHeaven = waiters[0];
+        if (positionsOnStairway[0].isEmpty) return;
 
+        AbstractWaiter waiterEnteringHeaven = positionsOnStairway[0].waiterOnPosition;
         if (waiterEnteringHeaven == player) { gameManager.Win(); }
-
-        waiters.RemoveAt(0);  
-        Task t = AllWaitersMovePhysciallyUpTo(0);
         waiterEnteringHeaven.GoToHeaven();
-        await (t);
+        StartCoroutine( positionsOnStairway[0].waiterIsLeaving() );
 
         currentPositionManager.Actualize();
         freeSlotsManager.RemoveOneSlot();
-
-        playerInput.unblock();
     }
 }
