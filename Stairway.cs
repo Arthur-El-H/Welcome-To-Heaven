@@ -45,7 +45,7 @@ public class Stairway : MonoBehaviour
         //Play Holy-Animation
         //Play Hit-Animation for player and Regular
 
-        if (waiters[index].CheckHolyness()) { player.GoToHell(); gameManager.Loose(); return; }        //Check For Win
+        //if (waiters[index].CheckHolyness()) { player.GoToHell(); gameManager.Loose(); return; }        //Check For Win
 
         AbstractWaiter hitWaiter = waiters[index];
         waiters.RemoveAt(index);
@@ -102,7 +102,11 @@ public class Stairway : MonoBehaviour
 
     public void LetOneIn()
     {
-        if (positionsOnStairway[0].isEmpty) return;
+        if (positionsOnStairway[0].isEmpty)
+        {
+            Debug.Log("noone to let in");
+            return;
+        }
 
         AbstractWaiter waiterEnteringHeaven = positionsOnStairway[0].waiterOnPosition;
         if (waiterEnteringHeaven == player) { gameManager.Win(); }
@@ -114,6 +118,11 @@ public class Stairway : MonoBehaviour
     }
 
     public PositionOnStairway getNextPosition( PositionOnStairway currentPosition)
+    {
+        return positionsOnStairway[currentPosition.index - 1];
+    }
+
+    public PositionOnStairway getPredecessingPosition(PositionOnStairway currentPosition)
     {
         return positionsOnStairway[currentPosition.index + 1];
     }

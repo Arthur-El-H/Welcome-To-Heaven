@@ -9,8 +9,6 @@ public abstract class AbstractWaiter : MonoBehaviour
     private float speed = 0.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
-    bool isMoving;
-
     public void GoToHell() 
     {
         Debug.Log("Going to hell");
@@ -31,6 +29,7 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     public async Task MoveToAsync(PositionOnStairway nextPosition)
     {
+        StartCoroutine(currentPosition.waiterIsLeaving());
         Vector2 Pos = nextPosition.coordinates;
         Vector2 firstTarget = new Vector2(this.transform.position.x, this.transform.position.y + flyHeight);
         while ((Vector2)transform.position != firstTarget)
@@ -53,6 +52,7 @@ public abstract class AbstractWaiter : MonoBehaviour
         }
         currentPosition = nextPosition;
         nextPosition.waiterOnPosition = this;
+        nextPosition.isEmpty = false;
     }
 
     public void turnLeft()

@@ -111,7 +111,7 @@ public class Game_manager : MonoBehaviour
         float currentHeight = firstPos.y;
 
         stairway.positionsOnStairway = new List<PositionOnStairway>(new PositionOnStairway[amountOfPositions]);
-        positionCounter = amountOfPositions;
+        positionCounter = amountOfPositions - 1;
         positionCounter--;
         createPositionOnStairway(firstPos, asPlayer);
 
@@ -119,7 +119,7 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-            createPositionOnStairway(newPos, true);
+            createPositionOnStairway(newPos, asWaiter);
             positionCounter--;
         }
 
@@ -130,7 +130,7 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight + .2f);
-            createPositionOnStairway(newPos, true);
+            createPositionOnStairway(newPos, asWaiter);
             positionCounter--;
         }
 
@@ -141,7 +141,7 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-            createPositionOnStairway(newPos, true);
+            createPositionOnStairway(newPos, asWaiter);
             positionCounter--;
         }
     }
@@ -149,6 +149,7 @@ public class Game_manager : MonoBehaviour
     private void createPositionOnStairway(Vector2 coordinates, bool waiterSpecification)
     {
         PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
+        nextPositionOnStairway.stairway = stairway;
         nextPositionOnStairway.coordinates = coordinates;
         nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
         stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
@@ -193,14 +194,14 @@ public class Game_manager : MonoBehaviour
 
     public void Update()
     {
-        for (int i = 1; i < amountOfPositions-1; i++)
-        {
-            PositionOnStairway positionToCheck = stairway.positionsOnStairway[i];
-            PositionOnStairway prePosition = stairway.positionsOnStairway[i-1];
+        //for (int i = 1; i < amountOfPositions-1; i++)
+        //{
+        //    PositionOnStairway positionToCheck = stairway.positionsOnStairway[i];
+        //    PositionOnStairway predecessorPosition = stairway.positionsOnStairway[i-1];
 
-            if (!positionToCheck.isEmpty) return;
-            if (prePosition.isEmpty) return;
-            prePosition.waiterOnPosition.catchUp();
-        }
+        //    if (!positionToCheck.isEmpty) return;
+        //    if (predecessorPosition.isEmpty) return;
+        //    predecessorPosition.waiterOnPosition.catchUp();
+        //}
     }
 }
