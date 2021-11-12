@@ -95,9 +95,9 @@ public class Stairway : MonoBehaviour
 
     private async Task createMoveTask (AbstractWaiter waiter, int index)
     {
-        Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
+        //Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
         waiter.currentPosition.index = index; //change index-reference
-        await (moving);
+        //await (moving);
     }
 
     public void LetOneIn()
@@ -111,5 +111,10 @@ public class Stairway : MonoBehaviour
 
         currentPositionManager.Actualize();
         freeSlotsManager.RemoveOneSlot();
+    }
+
+    public PositionOnStairway getNextPosition( PositionOnStairway currentPosition)
+    {
+        return positionsOnStairway[currentPosition.index + 1];
     }
 }

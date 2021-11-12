@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PositionOnStairway
 {
+    [SerializeField] private Stairway stairway;
     public float leavingTime = 1.5f;
 
     public Vector2 coordinates;
@@ -18,5 +19,10 @@ public class PositionOnStairway
         waiterOnPosition = null;
 
         Debug.Log(index + "is empty now");
+    }
+
+    public PositionOnStairway getNextPosition()
+    {
+        return stairway.getNextPosition(this);
     }
 }

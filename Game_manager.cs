@@ -31,6 +31,9 @@ public class Game_manager : MonoBehaviour
     float yStep = .38f;
     Vector2 firstPos = new Vector2(-7.3f, -4.25f);
 
+    const bool asPlayer = true;
+    const bool asWaiter = false;
+
     private void Start()
     {
         InitStairway();
@@ -110,19 +113,13 @@ public class Game_manager : MonoBehaviour
         stairway.positionsOnStairway = new List<PositionOnStairway>(new PositionOnStairway[amountOfPositions]);
         positionCounter = amountOfPositions;
         positionCounter--;
-        CreatePlayer();
+        createPositionOnStairway(firstPos, asPlayer);
 
         for (int i = 1; i < PosisitionsPerWay; i++)     //First Way
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-
-            PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
-            nextPositionOnStairway.coordinates = newPos;
-            nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
-            nextPositionOnStairway.waiterOnPosition = CreateWaiter((Vector3)newPos, nextPositionOnStairway);
-            stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
-
+            createPositionOnStairway(newPos, true);
             positionCounter--;
         }
 
@@ -133,13 +130,7 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + ((float)(9 - i) * xStep), currentHeight + .2f);
-
-            PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
-            nextPositionOnStairway.coordinates = newPos;
-            nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
-            nextPositionOnStairway.waiterOnPosition = CreateWaiter((Vector3)newPos, nextPositionOnStairway);
-            stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
-
+            createPositionOnStairway(newPos, true);
             positionCounter--;
         }
 
@@ -150,37 +141,42 @@ public class Game_manager : MonoBehaviour
         {
             currentHeight += yStep;
             newPos = new Vector2(firstPos.x + (i * xStep), currentHeight);
-
-            PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
-            nextPositionOnStairway.coordinates = newPos;
-            nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
-            nextPositionOnStairway.waiterOnPosition = CreateWaiter((Vector3)newPos, nextPositionOnStairway);
-            stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
-
+            createPositionOnStairway(newPos, true);
             positionCounter--;
         }
     }
 
-    private void CreatePlayer()
+    private void createPositionOnStairway(Vector2 coordinates, bool waiterSpecification)
     {
-        Debug.Log("amount of Positions = " + amountOfPositions + " and Lists are so big: " + stairway.positions.Count);
-        player = Instantiate(playerPre, (Vector3)firstPos, Quaternion.identity);
-
         PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
-        nextPositionOnStairway.coordinates = firstPos;
-        nextPositionOnStairway.index = positionCounter; 
-        nextPositionOnStairway.waiterOnPosition = player;
+        nextPositionOnStairway.coordinates = coordinates;
+        nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
+        stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
+        if (waiterSpecification == asWaiter)
+        {
+            AbstractWaiter waiter = CreateWaiter((Vector3)coordinates);
+            nextPositionOnStairway.waiterOnPosition = waiter;
+            waiter.currentPosition = nextPositionOnStairway;
+        }
+        if (waiterSpecification == asPlayer)
+        {
+            player = Instantiate(playerPre, (Vector3)firstPos, Quaternion.identity);
+            nextPositionOnStairway.waiterOnPosition = player;
+            player.currentPosition = nextPositionOnStairway;
+            initPlayer();
+        }
 
-        positionCounter--;
+    }
 
-        player.currentPosition = nextPositionOnStairway;
+    private void initPlayer()
+    {
         player.stairway = stairway;
         stairway.player = player;
         playerInput = player.GetComponent<PlayerInput>();
         stairway.playerInput = playerInput;
     }
 
-    private AbstractWaiter CreateWaiter(Vector3 newPos, PositionOnStairway positionOnStairway)
+    private AbstractWaiter CreateWaiter(Vector3 newPos)
     {
         AbstractWaiter waiter;
         int RandomInt = Random.Range(1, 3);
@@ -192,7 +188,6 @@ public class Game_manager : MonoBehaviour
         {            
             waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
         }
-        waiter.currentPosition = positionOnStairway;
         return waiter;
     }
 
@@ -206,7 +201,6 @@ public class Game_manager : MonoBehaviour
             if (!positionToCheck.isEmpty) return;
             if (prePosition.isEmpty) return;
             prePosition.waiterOnPosition.catchUp();
-
         }
     }
 }

@@ -9,6 +9,8 @@ public abstract class AbstractWaiter : MonoBehaviour
     private float speed = 0.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
+    bool isMoving;
+
     public void GoToHell() 
     {
         Debug.Log("Going to hell");
@@ -23,13 +25,13 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     public void catchUp()
     {
-        nextPosition = 
-        MoveToAsync()
+        PositionOnStairway nextPosition = currentPosition.getNextPosition();
+        MoveToAsync(nextPosition);
     }
 
-    public async Task MoveToAsync(Vector2 Pos)
+    public async Task MoveToAsync(PositionOnStairway nextPosition)
     {
-
+        Vector2 Pos = nextPosition.coordinates;
         Vector2 firstTarget = new Vector2(this.transform.position.x, this.transform.position.y + flyHeight);
         while ((Vector2)transform.position != firstTarget)
         {
@@ -49,6 +51,8 @@ public abstract class AbstractWaiter : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, Pos, speed * Time.deltaTime);
             await Task.Yield();
         }
+        currentPosition = nextPosition;
+        nextPosition.waiterOnPosition = this;
     }
 
     public void turnLeft()
