@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     Player player;
+    public Waiter_Manager waiterManager;
+
     bool isBlocked = false; 
     public void block() { isBlocked = true; } 
     public void unblock() { isBlocked = false; Debug.Log("unblocked"); }
@@ -17,16 +19,16 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if (isBlocked) { return; }
+        if (player.isMoving) { return; }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            player.ShakeNextsHand();
+            waiterManager.playerTriesShakingNextsHands();
         }
 
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            player.HitNext();
+            waiterManager.playerTriesHittingNext();
         }
     }
 }

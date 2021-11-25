@@ -7,15 +7,13 @@ using Random = UnityEngine.Random;
 public class Game_manager : MonoBehaviour
 {
     //References
-    public FreeSlotsManager freeSlotsManager;
-    public CurrentPositionManager currentPositionManager;
-    public Stairway stairway;
-    public GameObject WaiterParent;
+    [SerializeField] FreeSlotsManager freeSlotsManager;
+    [SerializeField] CurrentPositionManager currentPositionManager;
+    [SerializeField] Stairway stairway;
+    [SerializeField] Waiter_Manager waiterManager;
 
     //Prefabs
     public Player playerPre;
-    public AbstractWaiter Unholy;
-    public AbstractWaiter Holy;
 
     Player player;
     PlayerInput playerInput;
@@ -40,6 +38,8 @@ public class Game_manager : MonoBehaviour
         SetWaitersLayers();
         StartCoroutine(lettingPeopleIn());
         currentPositionManager.Initialize(player);
+        waiterManager.player = player;
+        
     }
 
     IEnumerator lettingPeopleIn()
@@ -52,17 +52,6 @@ public class Game_manager : MonoBehaviour
             {
                 yield return new WaitForSeconds(maxTimeOfInputBlock);
             }
-
-            //while (true) 
-            //{
-            //    if (!playerInput.isInputBlocked()) //Eigentlich sollte ich hier gucken, ob alle angekommen sind.
-            //    {
-            //        yield return new WaitForSeconds(maxTimeOfInputBlock);
-            //        break;
-            //    }
-            //    yield return new WaitForEndOfFrame();
-            //}
-
             stairway.LetOneIn();
             if (freeSlotsManager.CheckLoss()) { Loose(); break; }
             yield return new WaitForSeconds(timeBetweenEntries);
@@ -73,15 +62,14 @@ public class Game_manager : MonoBehaviour
     {
         Debug.Log("You Loose");
     }
+    public void Win()
+    {
+        Debug.Log("You Win");
+    }
 
     public void PlayerGotToGates()
     {
         if(freeSlotsManager.GetFreeSlots() > 0) { Win(); }
-    }
-
-    public void Win()
-    {
-        Debug.Log("You Win");
     }
 
     private void SetWaitersLayers()
@@ -105,7 +93,7 @@ public class Game_manager : MonoBehaviour
         }
     }
 
-    private void InitStairway()             
+    private void InitStairway()
     {
         Vector2 newPos;
         float currentHeight = firstPos.y;
@@ -155,7 +143,7 @@ public class Game_manager : MonoBehaviour
         stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
         if (waiterSpecification == asWaiter)
         {
-            AbstractWaiter waiter = CreateWaiter((Vector3)coordinates);
+            AbstractWaiter waiter = waiterManager.CreateWaiter((Vector3)coordinates);
             nextPositionOnStairway.waiterOnPosition = waiter;
             waiter.currentPosition = nextPositionOnStairway;
         }
@@ -169,28 +157,16 @@ public class Game_manager : MonoBehaviour
 
     }
 
-    private void initPlayer()
+    private void initPlayer() //TODO: Möglicherweise in Waiter_manager passender
     {
         player.stairway = stairway;
+        player.currentPositionManager = currentPositionManager;
         stairway.player = player;
         playerInput = player.GetComponent<PlayerInput>();
         stairway.playerInput = playerInput;
+        playerInput.waiterManager = waiterManager;
     }
 
-    private AbstractWaiter CreateWaiter(Vector3 newPos)
-    {
-        AbstractWaiter waiter;
-        int RandomInt = Random.Range(1, 3);
-        if (RandomInt == 1)
-        {
-            waiter = Instantiate(Holy, newPos, Quaternion.identity, WaiterParent.transform);
-        }
-        else
-        {            
-            waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
-        }
-        return waiter;
-    }
 
     public void Update()
     {

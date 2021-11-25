@@ -12,11 +12,19 @@ public abstract class AbstractWaiter : MonoBehaviour
     public void GoToHell() 
     {
         Debug.Log("Going to hell");
+        currentPosition.clear();
         Destroy(this.gameObject);
     }
 
     public void GoToHeaven()
     {
+        currentPosition.isEmpty = true;
+        currentPosition.waiterOnPosition = null;
+        PositionOnStairway predecessor = currentPosition.getPredecessingPosition();
+        if (!predecessor.isEmpty)
+        {
+            predecessor.waiterOnPosition.catchUp();
+        }
         Debug.Log("Going to Heaven");
         Destroy(this.gameObject);
     }
@@ -24,12 +32,12 @@ public abstract class AbstractWaiter : MonoBehaviour
     public void catchUp()
     {
         PositionOnStairway nextPosition = currentPosition.getNextPosition();
-        MoveToAsync(nextPosition);
+        StartCoroutine(currentPosition.waiterIsLeaving());
+        MoveTo(nextPosition);
     }
 
-    public async Task MoveToAsync(PositionOnStairway nextPosition)
+    virtual public async void MoveTo(PositionOnStairway nextPosition) //TODO prüfen ob hier void geht
     {
-        StartCoroutine(currentPosition.waiterIsLeaving());
         Vector2 Pos = nextPosition.coordinates;
         Vector2 firstTarget = new Vector2(this.transform.position.x, this.transform.position.y + flyHeight);
         while ((Vector2)transform.position != firstTarget)
@@ -53,6 +61,10 @@ public abstract class AbstractWaiter : MonoBehaviour
         currentPosition = nextPosition;
         nextPosition.waiterOnPosition = this;
         nextPosition.isEmpty = false;
+        if (nextPosition.getNextPosition().isEmpty)
+        {
+            catchUp();
+        }
     }
 
     public void turnLeft()
@@ -65,11 +77,11 @@ public abstract class AbstractWaiter : MonoBehaviour
         transform.eulerAngles = new Vector3(0f, 180f, 0f);
     }
 
-    //For regulars
+    //For regulars TODO: In Regular klasse!
 
-    bool IAmHoly; public void MakeHoly() { IAmHoly = true; }
+    bool isHolyBool; public void MakeHoly() { isHolyBool = true; }
 
-    public bool CheckHolyness() { return IAmHoly; }
+    public bool isHoly() { return isHolyBool; }
     public void ShakeHandsBackwards() 
     {
         //play anim

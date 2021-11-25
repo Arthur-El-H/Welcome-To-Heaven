@@ -6,28 +6,16 @@ public class Player : AbstractWaiter
 {
     //References
     public Stairway stairway;
+    public CurrentPositionManager currentPositionManager;
 
-    float stepY;
-    float stepX;
+    public bool isMoving;
 
-    public void FlyToAnimPos() { }
-    public IEnumerator Flying()
+
+    override public async void MoveTo(PositionOnStairway nextPosition) //TODO prüfen ob hier void geht
     {
-        Vector2 firstTarget = new Vector2(this.transform.position.x + stepX, this.transform.position.y + stepY);
-        while ((Vector2)transform.position != firstTarget)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, firstTarget, getSpeed() * Time.deltaTime);
-        }
-        yield return null;
-    }
-    public void HitNext() 
-    {
-        Debug.Log("Im Hitting");
-        stairway.RegularGotHit();
-    }
-    public void ShakeNextsHand() 
-    {
-        Debug.Log("Im Shaking the hand");
-        stairway.RegularGotHandShaken();
+        isMoving = true;
+        base.MoveTo(nextPosition);
+        currentPositionManager.Actualize();
+        isMoving = false;
     }
 }
