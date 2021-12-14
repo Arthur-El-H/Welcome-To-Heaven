@@ -100,8 +100,8 @@ public class Game_manager : MonoBehaviour
 
         stairway.positionsOnStairway = new List<PositionOnStairway>(new PositionOnStairway[amountOfPositions]);
         positionCounter = amountOfPositions - 1;
-        positionCounter--;
         createPositionOnStairway(firstPos, asPlayer);
+        positionCounter--;
 
         for (int i = 1; i < PosisitionsPerWay; i++)     //First Way
         {
@@ -162,6 +162,7 @@ public class Game_manager : MonoBehaviour
         player.stairway = stairway;
         player.currentPositionManager = currentPositionManager;
         stairway.player = player;
+        player.isLast = true;
         playerInput = player.GetComponent<PlayerInput>();
         stairway.playerInput = playerInput;
         playerInput.waiterManager = waiterManager;
@@ -170,14 +171,5 @@ public class Game_manager : MonoBehaviour
 
     public void Update()
     {
-        //for (int i = 1; i < amountOfPositions-1; i++)
-        //{
-        //    PositionOnStairway positionToCheck = stairway.positionsOnStairway[i];
-        //    PositionOnStairway predecessorPosition = stairway.positionsOnStairway[i-1];
-
-        //    if (!positionToCheck.isEmpty) return;
-        //    if (predecessorPosition.isEmpty) return;
-        //    predecessorPosition.waiterOnPosition.catchUp();
-        //}
     }
 }

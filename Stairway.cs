@@ -16,55 +16,13 @@ public class Stairway : MonoBehaviour
     public CurrentPositionManager currentPositionManager;
     public FreeSlotsManager freeSlotsManager;
 
-    //private async Task AllWaitersMovePhysciallyUpTo(int index) 
-    //{
-    //    List<Task> allTasksOfMocingWaiters = new List<Task>();
-    //    int posOfLast = waiters.Count - 1;
-
-    //    for (int i = index; i < posOfLast; i++)
-    //    {    
-    //        Task playerMovingToNextPos = createMoveTask(waiters[i], i);
-    //        allTasksOfMocingWaiters.Add(playerMovingToNextPos);
-
-    //        // waiter which is nearer to camera must be in according layer
-    //        if (i == 15) { waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 9; }
-    //        if (i == 6)  { waiters[i].GetComponent<SpriteRenderer>().sortingOrder = 8; }
-
-    //        await (playerMovingToNextPos);
-    //    }
-    //    Task t0 = createMoveTask(waiters[posOfLast], posOfLast);
-    //    await Task.WhenAll(allTasksOfMocingWaiters.ToArray());
-    //    //await (t0);
-    //}
-
-
-    private async Task SwapAsync(AbstractWaiter newFirst, AbstractWaiter newSecond)
-    {
-        int newFirstIndex = newFirst.currentPosition.index;
-        int newSecondIndex = newSecond.currentPosition.index;
-
-        waiters.RemoveAt(newFirstIndex);
-        waiters.Insert(newSecondIndex, newFirst);
-
-       // Task taskOne = createMoveTask(newFirst, newSecondIndex);
-       // Task taskTwo = createMoveTask(newSecond, newFirstIndex);
-
-        //await (taskOne);
-        //await (taskTwo);
-    }
-
-    //private async Task createMoveTask (AbstractWaiter waiter, int index)
-    //{
-    //    //Task moving = waiter.MoveToAsync(positions[index]);  //physical Movement
-    //    waiter.currentPosition.index = index; //change index-reference
-    //    //await (moving);
-    //}
-
     public void LetOneIn()
     {
+        Debug.Log("About to try letting one in");
         if (positionsOnStairway[0].isEmpty)
         {
             Debug.Log("noone to let in");
+            Debug.Log(positionsOnStairway[0].waiterOnPosition);
             return;
         }
 
@@ -80,6 +38,7 @@ public class Stairway : MonoBehaviour
 
     public PositionOnStairway getNextPosition( PositionOnStairway currentPosition)
     {
+        Debug.Log("getting position " + (currentPosition.index - 1));
         return positionsOnStairway[currentPosition.index - 1];
     }
 

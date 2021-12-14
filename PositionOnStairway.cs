@@ -22,9 +22,11 @@ public class PositionOnStairway
         isWaiterLeaving = false;
         waiterOnPosition = null;
         if (index == 26) yield break;  //checken ob es sich um letzten waiter handelt. Geht nicht über index, weil Menge der Waiter dynamisch ist
+
         PositionOnStairway predecessor = getPredecessingPosition();
         if (!predecessor.isEmpty)
         {
+            Debug.Log("Predecessor catching up. Predecessor: " + predecessor.waiterOnPosition.currentPosition.index);
             predecessor.waiterOnPosition.catchUp();
         }
         Debug.Log(index + "is empty now");

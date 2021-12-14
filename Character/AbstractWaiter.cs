@@ -6,6 +6,8 @@ using UnityEngine;
 public abstract class AbstractWaiter : MonoBehaviour
 {
     public PositionOnStairway currentPosition;
+    public bool isLast;
+    private bool isPlayer;
     private float speed = 0.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
@@ -21,10 +23,8 @@ public abstract class AbstractWaiter : MonoBehaviour
         currentPosition.isEmpty = true;
         currentPosition.waiterOnPosition = null;
         PositionOnStairway predecessor = currentPosition.getPredecessingPosition();
-        if (!predecessor.isEmpty)
-        {
-            predecessor.waiterOnPosition.catchUp();
-        }
+
+        if (predecessor.isEmpty) return;
         Debug.Log("Going to Heaven");
         Destroy(this.gameObject);
     }
@@ -32,8 +32,14 @@ public abstract class AbstractWaiter : MonoBehaviour
     public void catchUp()
     {
         PositionOnStairway nextPosition = currentPosition.getNextPosition();
-        StartCoroutine(currentPosition.waiterIsLeaving());
         MoveTo(nextPosition);
+        if(isLast)
+        {
+            currentPosition.isEmpty = true;
+            currentPosition.waiterOnPosition = null;
+            return;
+        }
+        StartCoroutine(currentPosition.waiterIsLeaving());
     }
 
     virtual public async void MoveTo(PositionOnStairway nextPosition) //TODO prüfen ob hier void geht
@@ -42,6 +48,7 @@ public abstract class AbstractWaiter : MonoBehaviour
         Vector2 firstTarget = new Vector2(this.transform.position.x, this.transform.position.y + flyHeight);
         while ((Vector2)transform.position != firstTarget)
         {
+            Debug.Log("loop 1");
             transform.position = Vector2.MoveTowards(transform.position, firstTarget, speed * Time.deltaTime);
             await Task.Yield();
         }
@@ -49,19 +56,26 @@ public abstract class AbstractWaiter : MonoBehaviour
         Vector2 secondTarget = new Vector2(Pos.x, Pos.y + flyHeight);
         while ((Vector2)transform.position != secondTarget)
         {
+            Debug.Log("loop 2");
             transform.position = Vector2.MoveTowards(transform.position, secondTarget, speed * Time.deltaTime);
             await Task.Yield();
         }
 
         while ((Vector2)transform.position != Pos)
         {
+            Debug.Log("loop 3");
             transform.position = Vector2.MoveTowards(transform.position, Pos, speed * Time.deltaTime);
             await Task.Yield();
         }
+
+        Debug.Log("a waiter succesfully catched up");
+
         currentPosition = nextPosition;
-        nextPosition.waiterOnPosition = this;
-        nextPosition.isEmpty = false;
-        if (nextPosition.getNextPosition().isEmpty)
+        currentPosition.waiterOnPosition = this;
+        currentPosition.isEmpty = false;
+
+        if (currentPosition.index == 0) return;
+        if (currentPosition.getNextPosition().isEmpty)
         {
             catchUp();
         }

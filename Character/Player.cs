@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class Player : AbstractWaiter
 {
@@ -15,6 +16,10 @@ public class Player : AbstractWaiter
     {
         isMoving = true;
         base.MoveTo(nextPosition);
+        while (currentPosition != nextPosition)
+        {
+            await Task.Yield();  
+        }
         currentPositionManager.Actualize();
         isMoving = false;
     }
