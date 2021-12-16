@@ -19,7 +19,6 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Player is moving: " + player.isMoving);
         if (player.isMoving) { return; }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))

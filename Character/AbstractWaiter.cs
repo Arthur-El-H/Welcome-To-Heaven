@@ -7,8 +7,7 @@ public abstract class AbstractWaiter : MonoBehaviour
 {
     public PositionOnStairway currentPosition;
     public bool isLast;
-    private bool isPlayer;
-    private float speed = 0.5f;   public float getSpeed() { return speed; }
+    private float speed = 1.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
     public void GoToHell() 
@@ -48,7 +47,6 @@ public abstract class AbstractWaiter : MonoBehaviour
         Vector2 firstTarget = new Vector2(this.transform.position.x, this.transform.position.y + flyHeight);
         while ((Vector2)transform.position != firstTarget)
         {
-            Debug.Log("loop 1");
             transform.position = Vector2.MoveTowards(transform.position, firstTarget, speed * Time.deltaTime);
             await Task.Yield();
         }
@@ -56,14 +54,12 @@ public abstract class AbstractWaiter : MonoBehaviour
         Vector2 secondTarget = new Vector2(Pos.x, Pos.y + flyHeight);
         while ((Vector2)transform.position != secondTarget)
         {
-            Debug.Log("loop 2");
             transform.position = Vector2.MoveTowards(transform.position, secondTarget, speed * Time.deltaTime);
             await Task.Yield();
         }
 
         while ((Vector2)transform.position != Pos)
         {
-            Debug.Log("loop 3");
             transform.position = Vector2.MoveTowards(transform.position, Pos, speed * Time.deltaTime);
             await Task.Yield();
         }

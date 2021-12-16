@@ -18,7 +18,7 @@ public class Game_manager : MonoBehaviour
     Player player;
     PlayerInput playerInput;
 
-    float timeBetweenEntries = 8f; // Time before a new waiter gets in
+    float timeBetweenEntries = 12f; // Time before a new waiter gets in
     float timeToWaitBeforeFirstEntry = 3f;
     float maxTimeOfInputBlock = 2f;
 

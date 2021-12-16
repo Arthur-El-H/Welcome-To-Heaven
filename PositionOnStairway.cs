@@ -17,19 +17,27 @@ public class PositionOnStairway
     public IEnumerator waiterIsLeaving()
     {
         isWaiterLeaving = true;
+        waiterOnPosition = null;
         yield return new WaitForSeconds(leavingTime);
         isEmpty = true;
         isWaiterLeaving = false;
-        waiterOnPosition = null;
         if (index == 26) yield break;  //checken ob es sich um letzten waiter handelt. Geht nicht über index, weil Menge der Waiter dynamisch ist
 
         PositionOnStairway predecessor = getPredecessingPosition();
+
+        while (predecessor.isEmpty && predecessor.index < 25)
+        {
+            predecessor = predecessor.getPredecessingPosition();
+            if (!predecessor.isEmpty)
+            {
+                predecessor.waiterOnPosition.catchUp();
+            }
+        }
+
         if (!predecessor.isEmpty)
         {
-            Debug.Log("Predecessor catching up. Predecessor: " + predecessor.waiterOnPosition.currentPosition.index);
             predecessor.waiterOnPosition.catchUp();
         }
-        Debug.Log(index + "is empty now");
     }
 
     internal void clear()
