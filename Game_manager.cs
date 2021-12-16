@@ -144,6 +144,18 @@ public class Game_manager : MonoBehaviour
         if (waiterSpecification == asWaiter)
         {
             AbstractWaiter waiter = waiterManager.CreateWaiter((Vector3)coordinates);
+            if (positionCounter > 16)
+            {
+                waiter.GetComponent<SpriteRenderer>().sortingOrder = 10;
+            }
+            else if (positionCounter > 7)
+            {
+                waiter.GetComponent<SpriteRenderer>().sortingOrder = 9;
+            }
+            else 
+            {
+                waiter.GetComponent<SpriteRenderer>().sortingOrder = 8;
+            }
             nextPositionOnStairway.waiterOnPosition = waiter;
             waiter.currentPosition = nextPositionOnStairway;
         }

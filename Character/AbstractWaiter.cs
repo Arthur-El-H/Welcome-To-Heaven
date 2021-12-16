@@ -70,6 +70,16 @@ public abstract class AbstractWaiter : MonoBehaviour
         currentPosition.waiterOnPosition = this;
         currentPosition.isEmpty = false;
 
+        if (nextPosition.index == 7)
+        {
+            this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 8;
+        }
+        if (nextPosition.index == 16)
+        {
+            this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 9;
+        }
+
+
         if (currentPosition.index == 0) return;
         if (currentPosition.getNextPosition().isEmpty)
         {
