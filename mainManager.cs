@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class mainManager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class mainManager : MonoBehaviour
     private void Start()
     {
         DontDestroyOnLoad(this);
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Start");
+        goToStart();
         //audio.loop = true;
     }
 
@@ -42,5 +43,22 @@ public class mainManager : MonoBehaviour
         musicPlaying = !musicPlaying;
         if (!musicPlaying) { audio.Stop(); }
         else { audio.Play(); }
+    }
+
+    public void goToStart()
+    {
+        SceneManager.LoadScene("Start");
+    }
+    public void goToLoose()
+    {
+        SceneManager.LoadScene("Loose");
+    }
+    public void goToHell()
+    {
+        SceneManager.LoadScene("Hell");
+    }
+    public void goToWin()
+    {
+        SceneManager.LoadScene("Win");
     }
 }

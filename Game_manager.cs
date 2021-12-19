@@ -11,6 +11,7 @@ public class Game_manager : MonoBehaviour
     [SerializeField] CurrentPositionManager currentPositionManager;
     [SerializeField] Stairway stairway;
     [SerializeField] Waiter_Manager waiterManager;
+    mainManager mainManager;
 
     //Prefabs
     public Player playerPre;
@@ -39,7 +40,7 @@ public class Game_manager : MonoBehaviour
         StartCoroutine(lettingPeopleIn());
         currentPositionManager.Initialize(player);
         waiterManager.player = player;
-        
+        mainManager = GameObject.Find("mainManager").GetComponent<mainManager>();
     }
 
     IEnumerator lettingPeopleIn()
@@ -53,18 +54,27 @@ public class Game_manager : MonoBehaviour
                 yield return new WaitForSeconds(maxTimeOfInputBlock);
             }
             stairway.LetOneIn();
-            if (freeSlotsManager.CheckLoss()) { Loose(); break; }
+            if (freeSlotsManager.CheckLoss()) { Loose(true); break; }
             yield return new WaitForSeconds(timeBetweenEntries);
         }
     }
 
-    public void Loose() 
+    public void Loose(bool full) 
     {
-        Debug.Log("You Loose");
+        if (full)
+        {
+            mainManager.goToLoose();
+        }
+
+        else
+        {
+            mainManager.goToHell();
+        }
+
     }
     public void Win()
     {
-        Debug.Log("You Win");
+        mainManager.goToWin();
     }
 
     public void PlayerGotToGates()
@@ -178,10 +188,5 @@ public class Game_manager : MonoBehaviour
         playerInput = player.GetComponent<PlayerInput>();
         stairway.playerInput = playerInput;
         playerInput.waiterManager = waiterManager;
-    }
-
-
-    public void Update()
-    {
     }
 }

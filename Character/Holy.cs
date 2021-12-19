@@ -9,7 +9,7 @@ public class Holy : AbstractWaiter
 
     private void Start()
     {
-        MakeHoly();
+        isHoly = true;
         StartCoroutine(showHoliness());
     }
 

@@ -36,4 +36,9 @@ public class start_Manager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void toggleMusic()
+    {
+        mainManager.toggleMusic();
+    }
 }

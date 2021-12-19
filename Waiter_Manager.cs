@@ -19,6 +19,7 @@ public class Waiter_Manager : MonoBehaviour
         if (RandomInt == 1)
         {
             waiter = Instantiate(Holy, newPos, Quaternion.identity, WaiterParent.transform);
+            waiter.isHoly = true;
         }
         else
         {
@@ -38,9 +39,10 @@ public class Waiter_Manager : MonoBehaviour
 
         AbstractWaiter waiterToHit = positionOfWaiterToHit.waiterOnPosition;
 
-        if (waiterToHit.isHoly())
+        if (waiterToHit.isHoly)
         {
-            gameManager.Loose();
+            Debug.Log("should loose now");
+            gameManager.Loose(false);
         }
 
         //Play Holy-Animation
@@ -62,7 +64,7 @@ public class Waiter_Manager : MonoBehaviour
         AbstractWaiter waiterToShakeHandsTo = positionOfWaiterToShakeHandsTo.waiterOnPosition;
         
         //Play Handshake-Animation for player and Regular
-        if (waiterToShakeHandsTo.isHoly())
+        if (waiterToShakeHandsTo.isHoly)
         {
             waiterToShakeHandsTo.MoveTo(player.currentPosition);
             player.MoveTo(waiterToShakeHandsTo.currentPosition);

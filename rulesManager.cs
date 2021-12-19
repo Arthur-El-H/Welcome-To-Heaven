@@ -17,4 +17,14 @@ public class rulesManager : MonoBehaviour
     {
         SceneManager.LoadScene(mainManager.lastScene);
     }
+
+    public void closeGame()
+    {
+        Application.Quit();
+    }
+
+    public void toggleMusic()
+    {
+        mainManager.toggleMusic();
+    }
 }

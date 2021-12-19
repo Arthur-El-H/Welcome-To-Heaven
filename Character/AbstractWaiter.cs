@@ -99,9 +99,8 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     //For regulars TODO: In Regular klasse!
 
-    bool isHolyBool; public void MakeHoly() { isHolyBool = true; }
+    public bool isHoly;
 
-    public bool isHoly() { return isHolyBool; }
     public void ShakeHandsBackwards() 
     {
         //play anim
