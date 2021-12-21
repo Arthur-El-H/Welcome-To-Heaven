@@ -8,6 +8,7 @@ public class mainManager : MonoBehaviour
     public string lastScene;
     int winsForOne = 0, WinsForTwo = 0;
     bool musicPlaying = true;
+    public bool isPaused;
     AudioSource audio;
 
     public void resetWins()
@@ -29,6 +30,7 @@ public class mainManager : MonoBehaviour
     {
         //audio = GetComponent<AudioSource>();
         Screen.fullScreen = true;
+        Application.targetFrameRate = 30;
     }
 
     private void Start()

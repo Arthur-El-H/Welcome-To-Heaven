@@ -35,27 +35,40 @@ public class Game_manager : MonoBehaviour
 
     private void Start()
     {
+        mainManager = GameObject.Find("mainManager").GetComponent<mainManager>();
         InitStairway();
         SetWaitersLayers();
         StartCoroutine(lettingPeopleIn());
         currentPositionManager.Initialize(player);
         waiterManager.player = player;
-        mainManager = GameObject.Find("mainManager").GetComponent<mainManager>();
     }
 
     IEnumerator lettingPeopleIn()
     {
-        yield return new WaitForSeconds(timeToWaitBeforeFirstEntry); 
+        float counter = 0.0f;
+        while (counter < timeToWaitBeforeFirstEntry)
+        {
+            if (!mainManager.isPaused) counter += Time.deltaTime;
+            yield return null;
+        }
 
         while (true)
         {
             if (playerInput.isInputBlocked())
             {
-                yield return new WaitForSeconds(maxTimeOfInputBlock);
+                while (counter < maxTimeOfInputBlock)
+                {
+                    if (!mainManager.isPaused) counter += Time.deltaTime;
+                    yield return null;
+                }
             }
             stairway.LetOneIn();
             if (freeSlotsManager.CheckLoss()) { Loose(true); break; }
-            yield return new WaitForSeconds(timeBetweenEntries);
+            while (counter < timeBetweenEntries)
+            {
+                if (!mainManager.isPaused) counter += Time.deltaTime;
+                yield return null;
+            }            
         }
     }
 
@@ -147,6 +160,7 @@ public class Game_manager : MonoBehaviour
     private void createPositionOnStairway(Vector2 coordinates, bool waiterSpecification)
     {
         PositionOnStairway nextPositionOnStairway = new PositionOnStairway();
+        nextPositionOnStairway.mainManager = mainManager;
         nextPositionOnStairway.stairway = stairway;
         nextPositionOnStairway.coordinates = coordinates;
         nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
@@ -188,5 +202,6 @@ public class Game_manager : MonoBehaviour
         playerInput = player.GetComponent<PlayerInput>();
         stairway.playerInput = playerInput;
         playerInput.waiterManager = waiterManager;
+        player.mainManager = mainManager;
     }
 }

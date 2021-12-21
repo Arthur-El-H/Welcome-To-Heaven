@@ -13,12 +13,21 @@ public class PositionOnStairway
     public AbstractWaiter waiterOnPosition;
     public bool isEmpty = false;
     public bool isWaiterLeaving = false;
+    public mainManager mainManager;
 
     public IEnumerator waiterIsLeaving()
     {
+        if (mainManager.isPaused) yield return new WaitForEndOfFrame();
         isWaiterLeaving = true;
         waiterOnPosition = null;
-        yield return new WaitForSeconds(leavingTime);
+
+        float counter = 0.0f;
+        while (counter < leavingTime)
+        {
+            if (!mainManager.isPaused) counter += Time.deltaTime;
+            yield return null;
+        }
+
         isEmpty = true;
         isWaiterLeaving = false;
         if (index == 26) yield break;  //checken ob es sich um letzten waiter handelt. Geht nicht über index, weil Menge der Waiter dynamisch ist

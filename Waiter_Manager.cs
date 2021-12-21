@@ -8,9 +8,17 @@ public class Waiter_Manager : MonoBehaviour
     [SerializeField] AbstractWaiter Holy;
     [SerializeField] GameObject WaiterParent;
     [SerializeField] Game_manager gameManager;
+    [SerializeField] hitAnimation hitAnimation; 
+    [SerializeField] shakeAnimation shakeAnimation; 
 
+    private mainManager mainManager;
     public List<AbstractWaiter> waiters;
     public Player player;
+
+    private void Start()
+    {
+        mainManager = GameObject.Find("mainManager").GetComponent<mainManager>();
+    }
 
     public AbstractWaiter CreateWaiter(Vector3 newPos)
     {
@@ -25,6 +33,7 @@ public class Waiter_Manager : MonoBehaviour
         {
             waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
         }
+        waiter.mainManager = mainManager;
         return waiter;
     }
 
@@ -47,7 +56,7 @@ public class Waiter_Manager : MonoBehaviour
 
         //Play Holy-Animation
         //Play Hit-Animation for player and Regular
-
+        hitAnimation.PlayHitAnimation();
         waiterToHit.GoToHell();
         player.catchUp();
     }
@@ -62,7 +71,7 @@ public class Waiter_Manager : MonoBehaviour
         }
 
         AbstractWaiter waiterToShakeHandsTo = positionOfWaiterToShakeHandsTo.waiterOnPosition;
-        
+        shakeAnimation.PlayShakeAnimation();
         //Play Handshake-Animation for player and Regular
         if (waiterToShakeHandsTo.isHoly)
         {
