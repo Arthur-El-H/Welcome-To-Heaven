@@ -7,10 +7,17 @@ public abstract class AbstractWaiter : MonoBehaviour
 {
     public PositionOnStairway currentPosition;
     public bool isLast;
+    public bool isShaking;
     public mainManager mainManager;
+    public SpriteRenderer sprite;
+    private Vector2 ascendingPoint;
     private float speed = 1.5f;   public float getSpeed() { return speed; }
     float flyHeight = .3f;
 
+    private void Start()
+    {
+        ascendingPoint = new Vector2(5.7f, 3f);
+    }
 
     public async void GoToHell() 
     {
@@ -24,17 +31,25 @@ public abstract class AbstractWaiter : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public async void GoToHeaven()
+    virtual public async Task GoToHeaven()
     {
         if (mainManager.isPaused) await Task.Yield();
 
         currentPosition.isEmpty = true;
         currentPosition.waiterOnPosition = null;
-        PositionOnStairway predecessor = currentPosition.getPredecessingPosition();
 
-        if (predecessor.isEmpty) return;
-        Debug.Log("Going to Heaven");
-        Destroy(this.gameObject);
+        while ((Vector2)transform.position != ascendingPoint)
+        {
+            if (mainManager.isPaused)
+            {
+                await Task.Yield();
+            }
+            else
+            {
+                transform.position = Vector2.MoveTowards(transform.position, ascendingPoint, speed * Time.deltaTime);
+                await Task.Yield();
+            }
+        }
     }
 
     public async void catchUp()
@@ -108,19 +123,15 @@ public abstract class AbstractWaiter : MonoBehaviour
 
         if (nextPosition.index == 7)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 8;
+            sprite.sortingOrder = 8;
         }
         if (nextPosition.index == 16)
         {
-            this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = 9;
+            sprite.sortingOrder = 9;
         }
 
 
         if (currentPosition.index == 0) return;
-        if (currentPosition.getNextPosition().isEmpty)
-        {
-            catchUp();
-        }
     }
 
     public void turnLeft()

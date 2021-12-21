@@ -31,13 +31,14 @@ public class PositionOnStairway
         isEmpty = true;
         isWaiterLeaving = false;
         if (index == 26) yield break;  //checken ob es sich um letzten waiter handelt. Geht nicht über index, weil Menge der Waiter dynamisch ist
+        if (getPredecessingPosition().waiterOnPosition.isShaking) yield break;
 
         PositionOnStairway predecessor = getPredecessingPosition();
 
         while (predecessor.isEmpty && predecessor.index < 25)
         {
             predecessor = predecessor.getPredecessingPosition();
-            if (!predecessor.isEmpty)
+            if (!predecessor.isEmpty )
             {
                 predecessor.waiterOnPosition.catchUp();
             }

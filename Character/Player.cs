@@ -8,9 +8,12 @@ public class Player : AbstractWaiter
     //References
     public Stairway stairway;
     public CurrentPositionManager currentPositionManager;
-
     public bool isMoving;
 
+    private void Awake()
+    {
+        sprite = GetComponent<SpriteRenderer>();
+    }
 
     override public async void MoveTo(PositionOnStairway nextPosition) //TODO prüfen ob hier void geht
     {
@@ -18,6 +21,7 @@ public class Player : AbstractWaiter
         base.MoveTo(nextPosition);
         while (currentPosition != nextPosition)
         {
+            // waiting for moveto to finish
             await Task.Yield();  
         }
         currentPositionManager.Actualize();

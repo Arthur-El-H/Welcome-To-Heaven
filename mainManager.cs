@@ -30,7 +30,6 @@ public class mainManager : MonoBehaviour
     {
         //audio = GetComponent<AudioSource>();
         Screen.fullScreen = true;
-        Application.targetFrameRate = 30;
     }
 
     private void Start()

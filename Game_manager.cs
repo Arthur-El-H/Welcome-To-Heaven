@@ -56,6 +56,7 @@ public class Game_manager : MonoBehaviour
         {
             if (playerInput.isInputBlocked())
             {
+                counter = 0.0f;
                 while (counter < maxTimeOfInputBlock)
                 {
                     if (!mainManager.isPaused) counter += Time.deltaTime;
@@ -64,6 +65,7 @@ public class Game_manager : MonoBehaviour
             }
             stairway.LetOneIn();
             if (freeSlotsManager.CheckLoss()) { Loose(true); break; }
+            counter = 0.0f;
             while (counter < timeBetweenEntries)
             {
                 if (!mainManager.isPaused) counter += Time.deltaTime;
@@ -101,17 +103,17 @@ public class Game_manager : MonoBehaviour
         {
             if(i > 16)
             {
-                stairway.positionsOnStairway[i].waiterOnPosition.GetComponent<SpriteRenderer>().sortingOrder = 10;
+                stairway.positionsOnStairway[i].waiterOnPosition.sprite.sortingOrder = 10;
             }
 
             else if( i > 7)
             {
-                stairway.positionsOnStairway[i].waiterOnPosition.GetComponent<SpriteRenderer>().sortingOrder = 9;
+                stairway.positionsOnStairway[i].waiterOnPosition.sprite.sortingOrder = 9;
             }
 
             else
             {
-                stairway.positionsOnStairway[i].waiterOnPosition.GetComponent<SpriteRenderer>().sortingOrder = 8;
+                stairway.positionsOnStairway[i].waiterOnPosition.sprite.sortingOrder = 8;
             }
         }
     }
@@ -164,21 +166,22 @@ public class Game_manager : MonoBehaviour
         nextPositionOnStairway.stairway = stairway;
         nextPositionOnStairway.coordinates = coordinates;
         nextPositionOnStairway.index = positionCounter; //doppelt sortiert --> in positionsOnStairway und über index der Positions 
-        stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;
+        stairway.positionsOnStairway[positionCounter] = nextPositionOnStairway;        
         if (waiterSpecification == asWaiter)
         {
             AbstractWaiter waiter = waiterManager.CreateWaiter((Vector3)coordinates);
+
             if (positionCounter > 16)
             {
-                waiter.GetComponent<SpriteRenderer>().sortingOrder = 10;
+                waiter.sprite.sortingOrder = 10;
             }
             else if (positionCounter > 7)
             {
-                waiter.GetComponent<SpriteRenderer>().sortingOrder = 9;
+                waiter.sprite.sortingOrder = 9;
             }
             else 
             {
-                waiter.GetComponent<SpriteRenderer>().sortingOrder = 8;
+                waiter.sprite.sortingOrder = 8;
             }
             nextPositionOnStairway.waiterOnPosition = waiter;
             waiter.currentPosition = nextPositionOnStairway;
@@ -203,5 +206,7 @@ public class Game_manager : MonoBehaviour
         stairway.playerInput = playerInput;
         playerInput.waiterManager = waiterManager;
         player.mainManager = mainManager;
+        player.sprite = GetComponent<SpriteRenderer>();
+
     }
 }

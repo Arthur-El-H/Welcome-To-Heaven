@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Waiter_Manager : MonoBehaviour
@@ -28,10 +29,12 @@ public class Waiter_Manager : MonoBehaviour
         {
             waiter = Instantiate(Holy, newPos, Quaternion.identity, WaiterParent.transform);
             waiter.isHoly = true;
+            waiter.sprite = waiter.transform.GetChild(0).GetComponent<SpriteRenderer>();
         }
         else
         {
             waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
+            waiter.sprite = waiter.GetComponent<SpriteRenderer>();
         }
         waiter.mainManager = mainManager;
         return waiter;
@@ -61,7 +64,7 @@ public class Waiter_Manager : MonoBehaviour
         player.catchUp();
     }
 
-    public void playerTriesShakingNextsHands()
+    public async void playerTriesShakingNextsHands()
     {
         PositionOnStairway positionOfWaiterToShakeHandsTo = player.currentPosition.getNextPosition();
         if (positionOfWaiterToShakeHandsTo.isEmpty || positionOfWaiterToShakeHandsTo.isWaiterLeaving)
@@ -71,8 +74,15 @@ public class Waiter_Manager : MonoBehaviour
         }
 
         AbstractWaiter waiterToShakeHandsTo = positionOfWaiterToShakeHandsTo.waiterOnPosition;
-        shakeAnimation.PlayShakeAnimation();
-        //Play Handshake-Animation for player and Regular
+
+        waiterToShakeHandsTo.isShaking = true;
+        player.isShaking = true;
+
+        await shakeAnimation.PlayShakeAnimation();
+
+        waiterToShakeHandsTo.isShaking = false;
+        player.isShaking = false;
+
         if (waiterToShakeHandsTo.isHoly)
         {
             waiterToShakeHandsTo.MoveTo(player.currentPosition);
@@ -81,8 +91,7 @@ public class Waiter_Manager : MonoBehaviour
             {
                 player.isLast = false;
                 waiterToShakeHandsTo.isLast = true;
-            }
+            }            
         }
-        // await (anim);
     }
 }

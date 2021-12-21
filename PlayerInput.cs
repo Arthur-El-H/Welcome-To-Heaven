@@ -19,7 +19,7 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if (player.isMoving) { return; }
+        if (player.isMoving || player.isShaking) { return; }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
