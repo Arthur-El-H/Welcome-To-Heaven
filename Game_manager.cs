@@ -174,14 +174,17 @@ public class Game_manager : MonoBehaviour
             if (positionCounter > 16)
             {
                 waiter.sprite.sortingOrder = 10;
+                waiter.turnRight();
             }
             else if (positionCounter > 7)
             {
                 waiter.sprite.sortingOrder = 9;
+                waiter.turnLeft();
             }
             else 
             {
                 waiter.sprite.sortingOrder = 8;
+                waiter.turnRight();
             }
             nextPositionOnStairway.waiterOnPosition = waiter;
             waiter.currentPosition = nextPositionOnStairway;
@@ -206,7 +209,7 @@ public class Game_manager : MonoBehaviour
         stairway.playerInput = playerInput;
         playerInput.waiterManager = waiterManager;
         player.mainManager = mainManager;
-        player.sprite = GetComponent<SpriteRenderer>();
-
+        player.sprite = player.GetComponent<SpriteRenderer>();
+        player.turnRight();
     }
 }

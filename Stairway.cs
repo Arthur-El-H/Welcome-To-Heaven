@@ -21,8 +21,11 @@ public class Stairway : MonoBehaviour
         Debug.Log("About to try letting one in");
         if (positionsOnStairway[0].isEmpty)
         {
-            Debug.Log("noone to let in");
-            Debug.Log(positionsOnStairway[0].waiterOnPosition);
+            return;
+        }
+        if (positionsOnStairway[0].isWaiterLeaving 
+            || positionsOnStairway[0].waiterOnPosition.isShaking)
+        {
             return;
         }
 

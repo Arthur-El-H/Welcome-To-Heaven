@@ -8,11 +8,15 @@ public class Holy : AbstractWaiter
     float minWaitTime = 8f;
     float maxWaitTime = 16f;
     float ascendAnimTime = 7f;
+    float timeToShowGloriole = 1f;
     [SerializeField] Animator anim;
+    SpriteRenderer gloriole;
     
     private void Awake()
     {
         isHoly = true;
+        gloriole = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        gloriole.enabled = false;
         StartCoroutine(showHoliness());
     }
 
@@ -21,7 +25,14 @@ public class Holy : AbstractWaiter
         while (true)
         {
             yield return new WaitForSeconds(GetWaitTime());
-            //play Holy-anim
+            gloriole.enabled = true;
+            float counter = 0.0f;
+            while (counter < timeToShowGloriole)
+            {
+                counter += Time.deltaTime;
+                yield return null;
+            }
+            gloriole.enabled = false;
         }
     }
 

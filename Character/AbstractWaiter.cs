@@ -6,6 +6,10 @@ using UnityEngine;
 public abstract class AbstractWaiter : MonoBehaviour
 {
     public PositionOnStairway currentPosition;
+    public bool directionTurnedTo;
+    public const bool right = true;
+    public const bool left = false;
+    public bool isHoly;
     public bool isLast;
     public bool isShaking;
     public mainManager mainManager;
@@ -21,22 +25,56 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     public async void GoToHell() 
     {
-        if (mainManager.isPaused)
+        while (mainManager.isPaused)
         {
             await Task.Yield();
         }
 
-        Debug.Log("Going to hell");
         currentPosition.clear();
+
+        await flyParabel( getParabel() );
+
         Destroy(this.gameObject);
     }
 
+    private List<Vector2> getParabel()
+    {
+        List < Vector2 > parabel = new List<Vector2>();
+
+        float xStartPoint = -.4f;
+        float step = .02f;
+        float x;
+        float y;
+        Vector2 parabelPoint;
+
+        x = xStartPoint - step;
+        for (int i = 0; i < 1200; i++)
+        {
+            x += step;
+            y = -2*(x * x);
+            parabelPoint.x = x;
+            parabelPoint.y = y;
+            parabel.Add(parabelPoint);            
+        }
+
+        return parabel;
+    }
+
+    private async Task flyParabel(List<Vector2> parabel)
+    {
+        Vector2 start = transform.position;
+        for (int i = 0; i < parabel.Count; i++)
+        {
+            transform.position = start + parabel[i];
+            await Task.Yield();
+        }
+    }
+        
     virtual public async Task GoToHeaven()
     {
         if (mainManager.isPaused) await Task.Yield();
 
-        currentPosition.isEmpty = true;
-        currentPosition.waiterOnPosition = null;
+        currentPosition.clear();
 
         while ((Vector2)transform.position != ascendingPoint)
         {
@@ -124,10 +162,12 @@ public abstract class AbstractWaiter : MonoBehaviour
         if (nextPosition.index == 7)
         {
             sprite.sortingOrder = 8;
+            turnRight();
         }
         if (nextPosition.index == 16)
         {
             sprite.sortingOrder = 9;
+            turnLeft();
         }
 
 
@@ -137,23 +177,12 @@ public abstract class AbstractWaiter : MonoBehaviour
     public void turnLeft()
     {
         transform.eulerAngles = new Vector3(0f, 0f, 0f);
+        directionTurnedTo = left;
     }
 
     public void turnRight()
     {
         transform.eulerAngles = new Vector3(0f, 180f, 0f);
-    }
-
-    //For regulars TODO: In Regular klasse!
-
-    public bool isHoly;
-
-    public void ShakeHandsBackwards() 
-    {
-        //play anim
-    }
-    public void getHit() 
-    {
-        //play anim
+        directionTurnedTo = right;
     }
 }

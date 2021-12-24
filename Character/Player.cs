@@ -10,11 +10,6 @@ public class Player : AbstractWaiter
     public CurrentPositionManager currentPositionManager;
     public bool isMoving;
 
-    private void Awake()
-    {
-        sprite = GetComponent<SpriteRenderer>();
-    }
-
     override public async void MoveTo(PositionOnStairway nextPosition) //TODO prüfen ob hier void geht
     {
         isMoving = true;

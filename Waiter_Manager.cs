@@ -15,6 +15,7 @@ public class Waiter_Manager : MonoBehaviour
     private mainManager mainManager;
     public List<AbstractWaiter> waiters;
     public Player player;
+    float waiterLeavingTime = 1.5f;
 
     private void Start()
     {
@@ -80,9 +81,6 @@ public class Waiter_Manager : MonoBehaviour
 
         await shakeAnimation.PlayShakeAnimation();
 
-        waiterToShakeHandsTo.isShaking = false;
-        player.isShaking = false;
-
         if (waiterToShakeHandsTo.isHoly)
         {
             waiterToShakeHandsTo.MoveTo(player.currentPosition);
@@ -93,5 +91,13 @@ public class Waiter_Manager : MonoBehaviour
                 waiterToShakeHandsTo.isLast = true;
             }            
         }
+        float counter = 0.0f;
+        while (counter < waiterLeavingTime)
+        {
+            if (!mainManager.isPaused) counter += Time.deltaTime;
+            await Task.Yield();
+        }
+        waiterToShakeHandsTo.isShaking = false;
+        player.isShaking = false;
     }
 }
