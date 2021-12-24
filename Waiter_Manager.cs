@@ -30,13 +30,12 @@ public class Waiter_Manager : MonoBehaviour
         {
             waiter = Instantiate(Holy, newPos, Quaternion.identity, WaiterParent.transform);
             waiter.isHoly = true;
-            waiter.sprite = waiter.transform.GetChild(0).GetComponent<SpriteRenderer>();
         }
         else
         {
             waiter = Instantiate(Unholy, newPos, Quaternion.identity, WaiterParent.transform);
-            waiter.sprite = waiter.GetComponent<SpriteRenderer>();
         }
+        waiter.sprite = waiter.transform.GetChild(0).GetComponent<SpriteRenderer>();
         waiter.mainManager = mainManager;
         return waiter;
     }
