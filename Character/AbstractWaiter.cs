@@ -119,12 +119,12 @@ public abstract class AbstractWaiter : MonoBehaviour
 
         if (nextPosition.index == 7)
         {
-            sprite.sortingOrder = 9;
+            sprite.sortingOrder = 8;
             turnRight();
         }
         if (nextPosition.index == 8)
         {
-            sprite.sortingOrder = 8;
+            sprite.sortingOrder = 9;
             turnLeft();
         }
         if (nextPosition.index == 16)
