@@ -101,8 +101,7 @@ public class Unholy : AbstractWaiter
 
     override public async Task GoToHeaven()
     {
-        await base.GoToHeaven();
-        Destroy(this.gameObject);
+        GoToHell();
     }
 
 }

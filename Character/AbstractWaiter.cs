@@ -20,7 +20,7 @@ public abstract class AbstractWaiter : MonoBehaviour
 
     private void Start()
     {
-        ascendingPoint = new Vector2(5.7f, 3f);
+        ascendingPoint = new Vector2(5.1f, 3f);
     }
 
     virtual public async void GoToHell() 
@@ -122,9 +122,19 @@ public abstract class AbstractWaiter : MonoBehaviour
             sprite.sortingOrder = 8;
             turnRight();
         }
-        if (nextPosition.index == 16)
+        if (nextPosition.index == 8)
         {
             sprite.sortingOrder = 9;
+            turnLeft();
+        }
+        if (nextPosition.index == 15)
+        {
+            sprite.sortingOrder = 9;
+            turnRight();
+        }
+        if (nextPosition.index == 16)
+        {
+            sprite.sortingOrder = 10;
             turnLeft();
         }
 
