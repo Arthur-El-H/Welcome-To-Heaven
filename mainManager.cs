@@ -9,7 +9,7 @@ public class mainManager : MonoBehaviour
     int winsForOne = 0, WinsForTwo = 0;
     bool musicPlaying = true;
     public bool isPaused;
-    AudioSource audio;
+    [SerializeField] AudioSource audio;
 
     public void resetWins()
     {
@@ -28,7 +28,7 @@ public class mainManager : MonoBehaviour
 
     private void Awake()
     {
-        //audio = GetComponent<AudioSource>();
+        audio = GetComponent<AudioSource>();
         Screen.fullScreen = true;
     }
 
@@ -36,7 +36,7 @@ public class mainManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         goToStart();
-        //audio.loop = true;
+        audio.loop = true;
     }
 
     public void toggleMusic()
