@@ -14,7 +14,7 @@ public class shakeAnimation : MonoBehaviour
     Vector2 shakedPos = new Vector2(1.89f, .26f);
     Vector2 off = new Vector2(50f, 50f);
     mainManager mainManager;
-    int shakeAnimFrames = 20;
+    int shakeAnimFrames = 60;
 
     private void Start()
     {

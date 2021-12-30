@@ -13,7 +13,7 @@ public class hitAnimation : MonoBehaviour
     Vector2 hittedPos = new Vector2(-1.25f, -.62f);
     Vector2 off = new Vector2(50f, 50f);
     mainManager mainManager;
-    int hitAnimFrames = 20;
+    int hitAnimFrames = 60;
 
     private void Start()
     {
