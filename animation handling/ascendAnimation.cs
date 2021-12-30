@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RecurringEvents_Manager : MonoBehaviour
+public class ascendAnimation : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

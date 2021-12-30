@@ -90,12 +90,6 @@ public class Waiter_Manager : MonoBehaviour
                 waiterToShakeHandsTo.isLast = true;
             }            
         }
-        float counter = 0.0f;
-        while (counter < waiterLeavingTime)
-        {
-            if (!mainManager.isPaused) counter += Time.deltaTime;
-            await Task.Yield();
-        }
         waiterToShakeHandsTo.isShaking = false;
         player.isShaking = false;
     }

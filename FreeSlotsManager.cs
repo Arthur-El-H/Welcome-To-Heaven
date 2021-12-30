@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class FreeSlotsManager : MonoBehaviour
 {
-    int currentFreeSlotsInHeaven = 12;
+    int currentFreeSlotsInHeaven = 7;
     [SerializeField] Text freeSlotsNumber;
     private const bool loss = true;
     private const bool win  = false;
